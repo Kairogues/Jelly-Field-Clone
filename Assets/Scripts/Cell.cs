@@ -9,6 +9,11 @@ public class Cell : MonoBehaviour, IPoolable
         set => cellData = value;
     }
 
+    [SerializeField] private Tile topLeft;
+    [SerializeField] private Tile topRight;
+    [SerializeField] private Tile botLeft;
+    [SerializeField] private Tile botRight;
+
 
 
     public void OnSpawn()
@@ -18,6 +23,12 @@ public class Cell : MonoBehaviour, IPoolable
 
 
     public void OnDespawn()
+    {
+        
+    }
+
+
+    public void UpdateCell()
     {
         
     }
