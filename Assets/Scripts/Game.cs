@@ -26,7 +26,6 @@ public class Game : MonoBehaviour
         {
             for (int y = 0; y < gameLogic.Height; y++)
             {
-                Debug.Log("Pos " + x + ":" + y);
                 cellGrid[gameLogic.Height * x + y] = SpawnCell(cellDataGrid.cellDataGrid[y].column[x], x, y);
             }
         }
@@ -41,9 +40,17 @@ public class Game : MonoBehaviour
 
     private Cell SpawnCell(CellData cellData, int x, int y)
     {
-        Cell newCell = Instantiate(cellPrefab, new Vector3(x + cellOffset.x, 0, y + cellOffset.y), Quaternion.identity);
-        newCell.CellData = cellData;
+        GameObject cellInstance = PoolManager.Instance.Spawn(
+                cellPrefab.gameObject,
+                new Vector3(x + cellOffset.x, 0, y + cellOffset.y),
+                Quaternion.identity
+            );
 
-        return newCell;
+        if (cellInstance.TryGetComponent(out Cell cell))
+        {
+            cell.CellData = cellData;
+        }
+
+        return cell;
     }
 }

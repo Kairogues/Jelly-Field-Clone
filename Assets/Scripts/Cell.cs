@@ -1,11 +1,24 @@
 using UnityEngine;
 
-public class Cell : MonoBehaviour
+public class Cell : MonoBehaviour, IPoolable
 {
-    private CellData cellData;
+    [SerializeField] private CellData cellData;
     public CellData CellData
     {
         get => cellData;
         set => cellData = value;
+    }
+
+
+
+    public void OnSpawn()
+    {
+        
+    }
+
+
+    public void OnDespawn()
+    {
+        
     }
 }
