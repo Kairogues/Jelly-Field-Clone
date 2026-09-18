@@ -1,9 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameVisual gameVisual;
-    
+    [SerializeField] private Game game;
+    [SerializeField] private GameLogic gameLogic;
+
+
+
+    private void Awake()
+    {
+        game.StartNewGame();
+    }
 
 
     private void Update()
