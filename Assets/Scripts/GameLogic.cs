@@ -3,21 +3,22 @@ using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour
 {
-    [SerializeField] private CellDataGrid cellDataGrid;
+    [SerializeField] private CellDataGrid currentCellDataGrid;
+    
 
 
 
     public int Width
     {
-        get => cellDataGrid.width;
+        get => currentCellDataGrid.width;
     }
     public int Height
     {
-        get => cellDataGrid.height;
+        get => currentCellDataGrid.height;
     }
-    public CellDataGrid CellDataGrid
+    public CellDataGrid CurrentCellDataGrid
     {
-        get => cellDataGrid;
+        get => currentCellDataGrid;
     }
 
 

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2438bdf4b2295748a5f7c47f997f269, type: 3}
   m_Name: CellDataGrid
   m_EditorClassIdentifier: Assembly-CSharp::CellDataGrid
-  width: 5
-  height: 7
+  width: 4
+  height: 3
   cellDataGrid:
   - column:
     - topLeft: 0
@@ -28,23 +28,7 @@ MonoBehaviour:
       topRight: 0
       botLeft: 0
       botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
   - column:
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
     - topLeft: 0
       topRight: 0
       botLeft: 0
@@ -70,86 +54,7 @@ MonoBehaviour:
       topRight: 0
       botLeft: 0
       botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
   - column:
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-  - column:
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-  - column:
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-  - column:
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
-    - topLeft: 0
-      topRight: 0
-      botLeft: 0
-      botRight: 0
     - topLeft: 0
       topRight: 0
       botLeft: 0
