@@ -11,7 +11,6 @@ public class Game : MonoBehaviour
 {
     [SerializeField] private GameLogic gameLogic;
     [SerializeField] private Cell cellPrefab;
-    // [SerializeField] private CellPoolManager
     private List<CellColumn> cellGrid;
     private Vector2 cellOffset;
 
@@ -23,13 +22,15 @@ public class Game : MonoBehaviour
         cellGrid = new List<CellColumn>(gameLogic.Width);
         for (int i = 0; i < gameLogic.Width; i++)
         {
-            CellColumn column = new CellColumn();
-            column.column = new List<Cell>(gameLogic.Height);
+            CellColumn column = new CellColumn
+            {
+                column = new List<Cell>(gameLogic.Height)
+            };
             cellGrid.Add(column);
         }
 
 
-        CellDataGrid cellDataGrid = gameLogic.CurrentCellDataGrid;
+        List<CellDataColumn> cellDataGrid = gameLogic.CellDataGrid;
 
         cellOffset.x = -0.5f * (gameLogic.Width - 1);
         cellOffset.y = -0.5f * (gameLogic.Height - 1);
@@ -37,7 +38,7 @@ public class Game : MonoBehaviour
         {
             for (int y = 0; y < gameLogic.Height; y++)
             {
-                cellGrid[x].column.Add(SpawnCell(cellDataGrid.cellDataGrid[x].column[y], x, y));
+                cellGrid[x].column.Add(SpawnCell(cellDataGrid[x].column[y], x, y));
             }
         }
     }

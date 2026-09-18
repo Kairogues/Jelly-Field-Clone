@@ -3,29 +3,55 @@ using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour
 {
-    [SerializeField] private CellDataGrid currentCellDataGrid;
+    [SerializeField] private CellDataGrid cellDataGridPrototype;
+    private List<CellDataColumn> cellDataGrid;
     
 
 
 
     public int Width
     {
-        get => currentCellDataGrid.width;
+        get => cellDataGrid.Count;
     }
     public int Height
     {
-        get => currentCellDataGrid.height;
+        get => cellDataGrid[0].column.Count;
     }
-    public CellDataGrid CurrentCellDataGrid
+    public List<CellDataColumn> CellDataGrid
     {
-        get => currentCellDataGrid;
+        get => cellDataGrid;
     }
 
 
 
     public void SetupNewGame()
     {
-        
+        if (cellDataGridPrototype == null)
+        {
+            Debug.LogError("The currentCellDataGrid ScriptableObject is missing!");
+            return;
+        }
+
+        cellDataGrid = new List<CellDataColumn>(cellDataGridPrototype.width);
+
+        for (int x = 0; x < cellDataGridPrototype.width; x++)
+        {
+            CellDataColumn runtimeColumn = new CellDataColumn
+            {
+                column = new List<CellData>(cellDataGridPrototype.height)
+            };
+
+            for (int y = 0; y < cellDataGridPrototype.height; y++)
+            {
+                CellData runtimeCell = cellDataGridPrototype.cellDataGrid[x].column[y];
+
+                runtimeColumn.column.Add(runtimeCell);
+            }
+
+            cellDataGrid.Add(runtimeColumn);
+        }
+
+        // PrintAllElement();
     }
 
 
@@ -44,5 +70,22 @@ public class GameLogic : MonoBehaviour
     private void FillGridAfterMatches()
     {
         
+    }
+
+
+    private void PrintAllElement()
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                Debug.Log(x + "," + y + ": "
+                        + CellDataGrid[x].column[y].topLeft + " "      
+                        + CellDataGrid[x].column[y].topRight + " "
+                        + CellDataGrid[x].column[y].botLeft + " "
+                        + CellDataGrid[x].column[y].botRight);
+            }
+
+        }
     }
 }
