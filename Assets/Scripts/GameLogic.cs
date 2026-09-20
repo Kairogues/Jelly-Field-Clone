@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Mathematics;
 
 public class GameLogic : MonoBehaviour
 {
     [SerializeField] private CellDataGrid cellDataGridPrototype;
     private Grid2D<TileType> tileTypeGrid;
-    private List<Vector2Int> matchedCell;
+    private List<Match> matchedCell;
     
 
     public int TileGridWidth => tileTypeGrid.SizeX;
@@ -46,10 +47,7 @@ public class GameLogic : MonoBehaviour
         {
             for (int y = 0; y < TileGridHeight; y++)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    
-                }
+                
             }
         }
     }
@@ -81,6 +79,24 @@ public class GameLogic : MonoBehaviour
         }
 
         return true;
+    }
+
+
+    private int2 GlobalTileCoordToCellCoord(int2 coord)
+    {
+        return new(coord.x / 2, coord.y / 2);
+    }
+
+
+    private int2 GlobalTileCoordToLocalTileCoord(int2 coord)
+    {
+        return new(coord.x % 2, coord.y % 2);
+    }
+
+
+    private int2 CellCoordWithLocalTileCoordToGlobalTileCoord(int2 cellCoord, int2 tileCoord)
+    {
+        return new(cellCoord.x * 2 + tileCoord.x, cellCoord.y * 2 + tileCoord.y);
     }
 
 

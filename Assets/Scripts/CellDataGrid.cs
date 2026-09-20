@@ -25,6 +25,7 @@ public class CellDataGrid : ScriptableObject
         get => cellDataGrid[x, y];
         set => cellDataGrid[x, y] = value;
     }
+
     public int2 Size => new(width, height);
 
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Mathematics;
 
 // A grid of 2x2 TileType
 [System.Serializable]
@@ -12,6 +13,12 @@ public class CellData
     {
         get => innerTile[x][y];
         set => innerTile[x][y] = value;
+    }
+
+    public TileType this[int2 c]
+    {
+        get => innerTile[c.x][c.y];
+        set => innerTile[c.x][c.y] = value;
     }
 
     public Grid2D<TileType> InnerTile
