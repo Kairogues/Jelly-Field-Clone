@@ -1,12 +1,12 @@
 public enum TileType
 {
-	None,
-	Empty,
+	EMPTY,
 	PINK,
 	ORANGE,
 	YELLOW,
 	GREEN,
 	CYAN,
 	BLUE,
-	PURPLE
+	PURPLE,
+	NONE
 }

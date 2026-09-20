@@ -1,48 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct CellColumn
-{
-    public List<Cell> column;
-}
+
 
 public class Game : MonoBehaviour
 {
     [SerializeField] private GameLogic gameLogic;
     [SerializeField] private Cell cellPrefab;
-    private List<CellColumn> cellGrid;
-    private Vector2 cellOffset;
+    private Grid2D<Cell> cellGrid;
+    private Vector2 cellOffset; // Offset to make the [0, 0] cell stay on the left bot
+
 
 
     public void StartNewGame()
     {
         gameLogic.SetupNewGame();
 
-        cellGrid = new List<CellColumn>(gameLogic.Width);
-        for (int i = 0; i < gameLogic.Width; i++)
+        Grid2D<CellData> cellDataGridPrototype = gameLogic.CellDataGridPrototype.cellDataGrid;
+
+        cellGrid = new Grid2D<Cell>(new(cellDataGridPrototype.SizeX, cellDataGridPrototype.SizeY));
+
+        cellOffset.x = -0.5f * (cellGrid.SizeX - 1);
+        cellOffset.y = -0.5f * (cellGrid.SizeY - 1);
+        for (int x = 0; x < cellGrid.SizeX; x++)
         {
-            CellColumn column = new CellColumn
+            for (int y = 0; y < cellGrid.SizeY; y++)
             {
-                column = new List<Cell>(gameLogic.Height)
-            };
-            cellGrid.Add(column);
-        }
-
-
-        List<CellDataColumn> cellDataGrid = gameLogic.CellDataGrid;
-
-        cellOffset.x = -0.5f * (gameLogic.Width - 1);
-        cellOffset.y = -0.5f * (gameLogic.Height - 1);
-        for (int x = 0; x < gameLogic.Width; x++)
-        {
-            for (int y = 0; y < gameLogic.Height; y++)
-            {
-                cellGrid[x].column.Add(SpawnCell(cellDataGrid[x].column[y], x, y));
+                cellGrid[x][y] = SpawnCell(cellDataGridPrototype[x][y], x + cellOffset.x, y + cellOffset.y);
             }
         }
     }
-
 
     public void Process()
     {
@@ -50,11 +37,11 @@ public class Game : MonoBehaviour
     }
 
 
-    private Cell SpawnCell(CellData cellData, int x, int y)
+    private Cell SpawnCell(CellData cellData, float x, float y)
     {
         GameObject cellInstance = PoolManager.Instance.Spawn(
                 cellPrefab.gameObject,
-                new Vector3(x + cellOffset.x, 0, y + cellOffset.y),
+                new Vector3(x, 0, y),
                 Quaternion.identity
             );
 
