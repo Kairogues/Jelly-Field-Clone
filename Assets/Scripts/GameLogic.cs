@@ -5,21 +5,18 @@ using Unity.Mathematics;
 public class GameLogic : MonoBehaviour
 {
     private Level currentLevel;
-    private List<SingleGoal> goals = new();
+    private GoalTracker goalTracker = new();
     public void SetLevelLayout(Level level)
     {
         currentLevel = level;
-        goals.Clear();
-        for (int i = 0; i < currentLevel.goals.Count; i++)
-        {
-            goals.Add(currentLevel.goals[i]);
-        }
+        goalTracker.SetupGoal(currentLevel.goals);
     }
 
     private Grid2D<TileType> tileTypeGrid;
     private Dictionary<TileType, List<MatchConnection>> matchConnections = new();
     private Dictionary<TileType, MatchCellGraph> matchCellGraph = new();
     private List<MatchGroup> matchGroups = new();
+    private HashSet<MatchGroup> neededMatchGroups = new();
     
 
     public int TileGridWidth => tileTypeGrid.SizeX;
@@ -28,7 +25,8 @@ public class GameLogic : MonoBehaviour
     public int CellGridWidth => GlobalTileCoordToCellCoord(TileGridWidth).x;
     public int CellGridHeight => GlobalTileCoordToCellCoord(TileGridWidth).y;
     public int2 CellGridSize => new(CellGridWidth, CellGridHeight);
-    public bool HasMatches() => matchGroups.Count != 0;
+    public bool HasMatches => !(matchConnections.Count == 0);
+    public bool NeedsFilling { get; private set; }
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
     public CellDataGrid LevelLayout => currentLevel.levelLayout;
     public List<MatchGroup> MatchGroups => matchGroups;
@@ -65,6 +63,25 @@ public class GameLogic : MonoBehaviour
     #region ScanForMatches
     public void ScanForMatches()
     {
+        ConstructConnectionList();
+        //PrintMatchConnectionsDict();
+
+        if (!HasMatches)
+        {
+            return;
+        }
+        
+        ConstructMatchCellGraph();
+        //PrintMatchCellGraph();
+
+        ConstructMatchGroup();
+        //PrintMatchGroups();
+    }
+
+
+
+    private void ConstructConnectionList()
+    {
         matchConnections.Clear();
 
         for (int x = 0; x < TileGridWidth; x++)
@@ -80,9 +97,6 @@ public class GameLogic : MonoBehaviour
                 CheckForConnection(globalTileCoord, globalTileCoordRight);
             }
         }
-
-        //PrintMatchConnectionsDict();
-        ConstructMatchCellGraph();
     }
 
 
@@ -169,9 +183,6 @@ public class GameLogic : MonoBehaviour
                 graph.AddEdge(item.Value[i].secondCellCoord, item.Value[i].firstCellCoord);
             }
         }
-
-        //PrintMatchCellGraph();
-        ConstructMatchGroup();
     }
 
 
@@ -183,8 +194,6 @@ public class GameLogic : MonoBehaviour
         {
             ConstructMatchGroupSingleTileType(graph.Key);
         }
-
-        //PrintMatchGroups();
     }
 
 
@@ -262,21 +271,57 @@ public class GameLogic : MonoBehaviour
 
 
     #region Process Matches
-    private void ProcessMatches()
+    public void ProcessMatches()
     {
-        
+        neededMatchGroups.Clear();
+
+        for (int i = 0; i < matchGroups.Count; i++)
+        {
+            foreach (int2 tileCoord in matchGroups[i].matchGroupByTile)
+            {
+                if (goalTracker.Contribute(tileTypeGrid[tileCoord]))
+                {
+                    if (!neededMatchGroups.Contains(matchGroups[i]))
+                    {
+                        neededMatchGroups.Add(matchGroups[i]);
+                    }
+                }
+
+                tileTypeGrid[tileCoord] = TileType.EMPTY;
+            }
+        }
+
+        NeedsFilling = true;
     }
     #endregion
 
 
 
     #region Recover After Matches
-    private void FillGridAfterMatches()
+    public void FillGridAfterMatches()
     {
-        
+
+
+        NeedsFilling = false;
+        ScanForMatches();
     }
     #endregion
 
+
+    public void UpdateTileTypeGrid(CellUpdateData cellUpdateData)
+    {
+        int2 cellCoord = cellUpdateData.cellCoord;
+        CellData cellData = cellUpdateData.cellData;
+
+        for (int x = 0; x < CellData.CELL_SIZE; x++)
+        {
+            for (int y = 0; y < CellData.CELL_SIZE; y++)
+            {
+                int2 localTileCoord = new(x, y);
+                tileTypeGrid[cellCoord + localTileCoord] = cellData[localTileCoord];
+            }
+        }
+    }
 
 
     private int2 GlobalTileCoordToCellCoord(int2 coord)

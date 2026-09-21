@@ -429,7 +429,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   game: {fileID: 458384365}
   gameLogic: {fileID: 458384362}
-  levels: []
+  levels:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &458384361
 GameObject:
   m_ObjectHideFlags: 0

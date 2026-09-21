@@ -12,12 +12,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2438bdf4b2295748a5f7c47f997f269, type: 3}
   m_Name: Level1_Layout
   m_EditorClassIdentifier: Assembly-CSharp::CellDataGrid
-  width: 1
-  height: 1
+  width: 3
+  height: 3
   cellDataGrid:
     grid:
     - column:
       - innerTile:
           grid:
+          - column: 0100000001000000i
+          - column: 0100000001000000i
+      - innerTile:
+          grid:
+          - column: 0700000007000000i
+          - column: 0700000007000000i
+      - innerTile:
+          grid:
+          - column: 0500000005000000i
+          - column: 0500000005000000i
+    - column:
+      - innerTile:
+          grid:
+          - column: 0700000007000000i
+          - column: 0700000007000000i
+      - innerTile:
+          grid:
+          - column: 0400000004000000i
+          - column: 0400000004000000i
+      - innerTile:
+          grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
+    - column:
+      - innerTile:
+          grid:
+          - column: 0300000003000000i
+          - column: 0300000003000000i
+      - innerTile:
+          grid:
+          - column: 0700000007000000i
+          - column: 0700000007000000i
+      - innerTile:
+          grid:
+          - column: 0500000005000000i
+          - column: 0500000005000000i

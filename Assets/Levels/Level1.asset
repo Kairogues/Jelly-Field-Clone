@@ -12,6 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e15a1f842bcb40b4db3d6dcb63810c70, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: Assembly-CSharp::Level
-  levelText: 
-  goals: []
-  levelLayout: {fileID: 0}
+  levelText: 1
+  goals:
+  - tileType: 5
+    goalAmount: 2
+  - tileType: 4
+    goalAmount: 2
+  - tileType: 7
+    goalAmount: 4
+  - tileType: 1
+    goalAmount: 2
+  - tileType: 3
+    goalAmount: 2
+  levelLayout: {fileID: 11400000, guid: e31a1c4efbdb836428836c6ebfaa2aaa, type: 2}

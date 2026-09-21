@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 
@@ -9,6 +10,9 @@ public class Game : MonoBehaviour
     [SerializeField] private Cell cellPrefab;
     private Grid2D<Cell> cellGrid;
     private Vector2 cellOffset; // Offset to make the [0, 0] cell stay on the left bot
+    private Queue<CellUpdateData> cellUpdateQueue = new();
+    private bool acceptInputCell = true;
+    private float idleDuration = 0f;
 
 
 
@@ -33,7 +37,35 @@ public class Game : MonoBehaviour
 
     public void Process()
     {
+        if (idleDuration > 0f)
+        {
+            idleDuration -= Time.deltaTime;
+            if (idleDuration > 0f)
+            {
+                return;
+            }
+        }
+
+        if (gameLogic.NeedsFilling)
+        {
+            gameLogic.FillGridAfterMatches();
+            // Set idleDuration
+            return;
+        }
+
+        // Handle Input queue (pop a move)
+
         gameLogic.ScanForMatches();
+
+        if (gameLogic.HasMatches)
+        {
+            acceptInputCell = false;
+            gameLogic.ProcessMatches();
+            // Set idleDuration
+            return;
+        }
+
+        acceptInputCell = true;
     }
 
 
@@ -51,5 +83,23 @@ public class Game : MonoBehaviour
         }
 
         return cell;
+    }
+
+
+    public void AddCellUpdate(CellUpdateData cellUpdateData)
+    {
+        cellUpdateQueue.Enqueue(cellUpdateData);
+    }
+
+
+    public void UpdateCellQueueHandle()
+    {
+        CellUpdateData cellUpdate = cellUpdateQueue.Dequeue();
+        gameLogic.UpdateTileTypeGrid(cellUpdate);
+        int2 cellCoord = cellUpdate.cellCoord;
+        CellData cellData = cellUpdate.cellData;
+
+        cellGrid[cellCoord].CellData = cellData;
+        cellGrid[cellCoord].UpdateCell();
     }
 }

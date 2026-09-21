@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        HandleInput();
         ProcessGame();
     }
 
@@ -41,6 +40,6 @@ public class GameManager : MonoBehaviour
 
     private void ProcessGame()
     {
-        
+        game.Process();
     }
 }

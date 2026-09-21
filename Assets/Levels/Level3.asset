@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Level3
   m_EditorClassIdentifier: Assembly-CSharp::Level
   levelText: 
-  goals: []
+  goals:
+  - tileType: 3
+    goalAmount: 8
   levelLayout: {fileID: 0}
