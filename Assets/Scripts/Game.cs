@@ -33,7 +33,7 @@ public class Game : MonoBehaviour
 
     public void Process()
     {
-        
+        gameLogic.ScanForMatches();
     }
 
 

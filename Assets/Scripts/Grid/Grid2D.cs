@@ -62,7 +62,7 @@ public class Grid2D<T>
     }
 
 
-	public bool AreValidCoordinates (int2 c)
+	public bool AreInRangeCoordinates (int2 c)
     {
 		if (0 <= c.x && c.x < size.x && 0 <= c.y && c.y < size.y)
         {

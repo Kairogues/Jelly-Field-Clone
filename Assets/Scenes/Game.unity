@@ -383,6 +383,52 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &445702184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 445702185}
+  - component: {fileID: 445702186}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &445702185
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445702184}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &445702186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445702184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bec2c6719089f384d8ce29a6253f85de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  game: {fileID: 458384365}
+  gameLogic: {fileID: 458384362}
 --- !u!1 &458384361
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,9 +440,8 @@ GameObject:
   - component: {fileID: 458384363}
   - component: {fileID: 458384362}
   - component: {fileID: 458384365}
-  - component: {fileID: 458384364}
   m_Layer: 0
-  m_Name: GameLogic
+  m_Name: Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -414,7 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4afe6c7a9bcf62245beb33f69043e228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameLogic
-  currentCellDataGrid: {fileID: 11400000, guid: fa6b899db79675e448ed331e163a6443, type: 2}
+  cellDataGridPrototype: {fileID: 11400000, guid: fa6b899db79675e448ed331e163a6443, type: 2}
 --- !u!4 &458384363
 Transform:
   m_ObjectHideFlags: 0
@@ -430,20 +475,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &458384364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458384361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bec2c6719089f384d8ce29a6253f85de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  game: {fileID: 458384365}
-  gameLogic: {fileID: 458384362}
 --- !u!114 &458384365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,3 +591,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 458384363}
   - {fileID: 767302248}
+  - {fileID: 445702185}
