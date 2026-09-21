@@ -8,8 +8,7 @@ public class GameLogic : MonoBehaviour
     private Grid2D<TileType> tileTypeGrid;
     private Dictionary<TileType, List<MatchConnection>> matchConnections = new();
     private Dictionary<TileType, MatchCellGraph> matchCellGraph = new();
-    private Dictionary<TileType, HashSet<int2>> matchGroupByCell = new();
-    private Dictionary<TileType, List<int2>> matchGroupByTile = new();
+    private List<MatchGroup> matchGroups = new();
     
 
     public int TileGridWidth => tileTypeGrid.SizeX;
@@ -18,11 +17,13 @@ public class GameLogic : MonoBehaviour
     public int CellGridWidth => GlobalTileCoordToCellCoord(TileGridWidth).x;
     public int CellGridHeight => GlobalTileCoordToCellCoord(TileGridWidth).y;
     public int2 CellGridSize => new(CellGridWidth, CellGridHeight);
+    public bool HasMatches() => matchGroups.Count != 0;
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
     public CellDataGrid CellDataGridPrototype => cellDataGridPrototype;
+    public List<MatchGroup> MatchGroups => matchGroups;
 
 
-
+    #region Setup
     public void SetupNewGame()
     {
         if (cellDataGridPrototype == null)
@@ -46,8 +47,11 @@ public class GameLogic : MonoBehaviour
 
         //PrintAllElement(true);
     }
+    #endregion
 
 
+
+    #region ScanForMatches
     public void ScanForMatches()
     {
         matchConnections.Clear();
@@ -156,30 +160,112 @@ public class GameLogic : MonoBehaviour
         }
 
         //PrintMatchCellGraph();
+        ConstructMatchGroup();
     }
 
 
+    private void ConstructMatchGroup()
+    {
+        matchGroups.Clear();
+
+        foreach (KeyValuePair<TileType, MatchCellGraph> graph in matchCellGraph)
+        {
+            ConstructMatchGroupSingleTileType(graph.Key);
+        }
+
+        //PrintMatchGroups();
+    }
+
+
+    private void ConstructMatchGroupSingleTileType(TileType tileType)
+    {
+        Queue<int2> trackingCell = new();
+        HashSet<int2> visitedCell = new();
+        bool hasVisitedAll = false;
+
+        while (visitedCell.Count < matchCellGraph[tileType].edges.Count)
+        {
+            // Find one random unvisited cell
+            int2 startCell = new();
+            foreach (KeyValuePair<int2, List<int2>> item in matchCellGraph[tileType].edges)
+            {
+                if (!visitedCell.Contains(item.Key))
+                {
+                    startCell = item.Key;
+                    break;
+                }
+
+                hasVisitedAll = true;
+            }
+
+            if (hasVisitedAll)
+            {
+                break;
+            }
+
+            MatchGroup matchGroup = new()
+            {
+                matchGroupByCell = new(),
+                matchGroupByTile = new(),
+                tileType = tileType
+            };
+
+            trackingCell.Enqueue(startCell);
+            visitedCell.Add(startCell);
+
+            while (trackingCell.Count > 0)
+            {
+                int2 currentCell = trackingCell.Dequeue();
+
+                matchGroup.matchGroupByCell.Add(currentCell);
+
+                for (int x = 0; x < CellData.CELL_SIZE; x++)
+                {
+                    for (int y = 0; y < CellData.CELL_SIZE; y++)
+                    {
+                        int2 globalTileCoord = CellCoordWithLocalTileCoordToGlobalTileCoord(currentCell, new(x, y));
+                        if (tileTypeGrid[globalTileCoord] == tileType)
+                        {
+                            matchGroup.matchGroupByTile.Add(globalTileCoord);
+                        }
+                    }
+                }
+
+                foreach (int2 neighbor in matchCellGraph[tileType].edges[currentCell])
+                {
+                    if (visitedCell.Contains(neighbor))
+                    {
+                        continue;
+                    }
+
+                    visitedCell.Add(neighbor);
+                    trackingCell.Enqueue(neighbor);
+                }
+            }
+
+            matchGroups.Add(matchGroup);
+        }
+    }
+    #endregion
+
+
+
+    #region Process Matches
     private void ProcessMatches()
     {
         
     }
+    #endregion
 
 
+
+    #region Recover After Matches
     private void FillGridAfterMatches()
     {
         
     }
+    #endregion
 
-
-    public bool HasMatches()
-    {
-        if (matchConnections.Count == 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
 
 
     private int2 GlobalTileCoordToCellCoord(int2 coord)
@@ -247,6 +333,16 @@ public class GameLogic : MonoBehaviour
         foreach (KeyValuePair<TileType, MatchCellGraph> kvp in matchCellGraph)
         {
             Debug.Log($"Color [{kvp.Key}]:\n{kvp.Value}");
+        }
+    }
+
+
+    private void PrintMatchGroups()
+    {
+        Debug.Log("MATCH GROUPS");
+        for (int i = 0; i < matchGroups.Count; i++)
+        {
+            Debug.Log(matchGroups[i]);
         }
     }
 }
