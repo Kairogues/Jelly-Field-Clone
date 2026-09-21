@@ -429,6 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   game: {fileID: 458384365}
   gameLogic: {fileID: 458384362}
+  levels: []
 --- !u!1 &458384361
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +460,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4afe6c7a9bcf62245beb33f69043e228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameLogic
-  cellDataGridPrototype: {fileID: 11400000, guid: fa6b899db79675e448ed331e163a6443, type: 2}
 --- !u!4 &458384363
 Transform:
   m_ObjectHideFlags: 0

@@ -4,7 +4,18 @@ using Unity.Mathematics;
 
 public class GameLogic : MonoBehaviour
 {
-    [SerializeField] private CellDataGrid cellDataGridPrototype;
+    private Level currentLevel;
+    private List<SingleGoal> goals = new();
+    public void SetLevelLayout(Level level)
+    {
+        currentLevel = level;
+        goals.Clear();
+        for (int i = 0; i < currentLevel.goals.Count; i++)
+        {
+            goals.Add(currentLevel.goals[i]);
+        }
+    }
+
     private Grid2D<TileType> tileTypeGrid;
     private Dictionary<TileType, List<MatchConnection>> matchConnections = new();
     private Dictionary<TileType, MatchCellGraph> matchCellGraph = new();
@@ -19,20 +30,20 @@ public class GameLogic : MonoBehaviour
     public int2 CellGridSize => new(CellGridWidth, CellGridHeight);
     public bool HasMatches() => matchGroups.Count != 0;
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
-    public CellDataGrid CellDataGridPrototype => cellDataGridPrototype;
+    public CellDataGrid LevelLayout => currentLevel.levelLayout;
     public List<MatchGroup> MatchGroups => matchGroups;
 
 
     #region Setup
     public void SetupNewGame()
     {
-        if (cellDataGridPrototype == null)
+        if (currentLevel == null)
         {
-            Debug.LogError("The currentCellDataGrid ScriptableObject is missing!");
+            Debug.LogError("The currentLevel ScriptableObject is missing!");
             return;
         }
 
-        tileTypeGrid = new Grid2D<TileType>(cellDataGridPrototype.Size * CellData.CELL_SIZE);
+        tileTypeGrid = new Grid2D<TileType>(LevelLayout.Size * CellData.CELL_SIZE);
 
         for (int x = 0; x < tileTypeGrid.SizeX; x++)
         {
@@ -41,7 +52,7 @@ public class GameLogic : MonoBehaviour
                 int2 globalTileCoord = new(x, y);
                 int2 cellCoord = GlobalTileCoordToCellCoord(globalTileCoord);
                 int2 localTileCoord = GlobalTileCoordToLocalTileCoord(globalTileCoord);
-                tileTypeGrid[globalTileCoord] = cellDataGridPrototype[cellCoord][localTileCoord];
+                tileTypeGrid[globalTileCoord] = LevelLayout[cellCoord][localTileCoord];
             }
         }
 

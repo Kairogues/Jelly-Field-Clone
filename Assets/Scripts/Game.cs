@@ -16,7 +16,7 @@ public class Game : MonoBehaviour
     {
         gameLogic.SetupNewGame();
 
-        Grid2D<CellData> cellDataGridPrototype = gameLogic.CellDataGridPrototype.cellDataGrid;
+        Grid2D<CellData> cellDataGridPrototype = gameLogic.LevelLayout.cellDataGrid;
 
         cellGrid = new Grid2D<Cell>(new(cellDataGridPrototype.SizeX, cellDataGridPrototype.SizeY));
 
