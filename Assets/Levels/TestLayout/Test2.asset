@@ -19,27 +19,27 @@ MonoBehaviour:
     - column:
       - innerTile:
           grid:
-          - column: 0000000001000000i
-          - column: 0000000001000000i
+          - column: 0200000001000000i
+          - column: 0300000001000000i
       - innerTile:
           grid:
-          - column: 0100000000000000i
-          - column: 0000000000000000i
+          - column: 0100000004000000i
+          - column: 0500000006000000i
     - column:
       - innerTile:
           grid:
-          - column: 0000000001000000i
-          - column: 0000000000000000i
+          - column: 0700000001000000i
+          - column: 0600000006000000i
       - innerTile:
           grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
+          - column: 0800000008000000i
+          - column: 0800000008000000i
     - column:
       - innerTile:
           grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
+          - column: 0800000008000000i
+          - column: 0800000008000000i
       - innerTile:
           grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
+          - column: 0800000008000000i
+          - column: 0800000008000000i

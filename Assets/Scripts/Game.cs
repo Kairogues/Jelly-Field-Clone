@@ -34,7 +34,7 @@ public class Game : MonoBehaviour
         {
             for (int y = 0; y < cellGrid.SizeY; y++)
             {
-                cellGrid[x][y] = SpawnCell(cellDataGridPrototype[x][y], x + cellOffset.x, y + cellOffset.y);
+                cellGrid[x][y] = SpawnCell(cellDataGridPrototype[x][y], x, y);
             }
         }
     }
@@ -46,6 +46,7 @@ public class Game : MonoBehaviour
             gameLogic.Test();
             return;
         }
+
         if (idleDuration > 0f)
         {
             idleDuration -= Time.deltaTime;
@@ -85,13 +86,14 @@ public class Game : MonoBehaviour
     {
         GameObject cellInstance = PoolManager.Instance.Spawn(
                 cellPrefab.gameObject,
-                new Vector3(x, 0, y),
+                new Vector3(x + cellOffset.x, 0, y + cellOffset.y),
                 Quaternion.identity
             );
 
         if (cellInstance.TryGetComponent(out Cell cell))
         {
             cell.CellData = cellData;
+            cell.Coord = new((int)x, (int)y);
         }
 
         return cell;
@@ -115,6 +117,6 @@ public class Game : MonoBehaviour
         CellData cellData = cellUpdate.cellData;
 
         cellGrid[cellCoord].CellData = cellData;
-        cellGrid[cellCoord].UpdateCell();
+        cellGrid[cellCoord].Setup();
     }
 }

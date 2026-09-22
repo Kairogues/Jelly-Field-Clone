@@ -19,5 +19,5 @@ MonoBehaviour:
     - column:
       - innerTile:
           grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
+          - column: 0100000001000000i
+          - column: 0200000000000000i

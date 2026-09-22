@@ -31,6 +31,7 @@ public class GameLogic : MonoBehaviour
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
     public CellDataGrid LevelLayout => currentLevel.levelLayout;
     public List<MatchGroup> MatchGroups => matchGroups;
+    public HashSet<int2> CellToFill => cellToFill;
 
 
 
@@ -325,6 +326,23 @@ public class GameLogic : MonoBehaviour
                 tileTypeGrid[cellCoord + localTileCoord] = cellData[localTileCoord];
             }
         }
+    }
+
+
+    public CellData GetCellData(int2 cellCoord)
+    {
+        TileType[] tileType = new TileType[4];
+        int index = 0;
+        for (int x = 0; x < CellData.CELL_SIZE; x++)
+        {
+            for (int y = 0; y < CellData.CELL_SIZE; y++)
+            {
+                int2 tileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, new(x, y));
+                tileType[index] = tileTypeGrid[tileCoord];
+                index++;
+            }
+        }
+        return new CellData(tileType[0], tileType[1], tileType[2], tileType[3]);
     }
 
 

@@ -16,4 +16,4 @@ MonoBehaviour:
   goals:
   - key: 0
     value: 0
-  levelLayout: {fileID: 11400000, guid: 97547f4a2540bc84596db6109a9fcd55, type: 2}
+  levelLayout: {fileID: 11400000, guid: 430ec78ab21ad3548828b12b0a227748, type: 2}

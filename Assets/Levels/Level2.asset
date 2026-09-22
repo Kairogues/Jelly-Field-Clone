@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Level
   levelText: 2
   goals:
-  - tileType: 1
-    goalAmount: 8
-  levelLayout: {fileID: 0}
+  - key: 0
+    value: 0
+  levelLayout: {fileID: 11400000, guid: fa6b899db79675e448ed331e163a6443, type: 2}
