@@ -14,7 +14,7 @@ public class Game : MonoBehaviour
     [SerializeField] private Cell cellPrefab;
     private Grid2D<Cell> cellGrid;
     private Vector2 cellOffset; // Offset to make the [0, 0] cell stay on the left bot
-    private Queue<CellUpdateData> cellUpdateQueue = new();
+    private Queue<Cell> incomingCellQueue = new();
     private bool acceptInputCell = true;
     private float idleDuration = 0f;
 
@@ -58,14 +58,14 @@ public class Game : MonoBehaviour
 
         if (gameLogic.NeedsFilling)
         {
-            gameLogic.FillGridAfterMatches();
+            FillGridAfterMatches();
             // Set idleDuration
             return;
         }
 
         if (acceptInputCell)
         {
-            HandleCellUpdateQueue();
+            HandleIncomingCell();
         }
 
         gameLogic.ScanForMatches();
@@ -73,12 +73,33 @@ public class Game : MonoBehaviour
         if (gameLogic.HasMatches)
         {
             acceptInputCell = false;
-            gameLogic.ProcessMatches();
+            ProcessMatches();
             // Set idleDuration
             return;
         }
 
         acceptInputCell = true;
+    }
+
+
+    private void ProcessMatches()
+    {
+        gameLogic.ProcessMatches();
+
+        foreach (int2 cell in gameLogic.CellToFill)
+        {
+            CellData cellData = gameLogic.GetCellData(cell);
+            cellGrid[cell].ProcessMatch(cellData);
+        }
+    }
+
+
+    private void FillGridAfterMatches()
+    {
+        gameLogic.FillGridAfterMatches();
+
+
+        
     }
 
 
@@ -92,7 +113,7 @@ public class Game : MonoBehaviour
 
         if (cellInstance.TryGetComponent(out Cell cell))
         {
-            cell.CellData = cellData;
+            cell.Setup(cellData);
             cell.Coord = new((int)x, (int)y);
         }
 
@@ -102,21 +123,30 @@ public class Game : MonoBehaviour
 
     public void AddCellUpdate(CellUpdateData cellUpdateData)
     {
-        cellUpdateQueue.Enqueue(cellUpdateData);
+        //incomingCellQueue.Enqueue(cellUpdateData);
+    }
+
+    public void AddCell(Cell cell)
+    {
+        incomingCellQueue.Enqueue(cell);
     }
 
 
-    public void HandleCellUpdateQueue()
+    public void HandleIncomingCell()
     {
-        if (!cellUpdateQueue.TryDequeue(out CellUpdateData cellUpdate))
+        if (!incomingCellQueue.TryDequeue(out Cell cell))
         {
             return;
         }
-        gameLogic.UpdateTileTypeGrid(cellUpdate);
-        int2 cellCoord = cellUpdate.cellCoord;
-        CellData cellData = cellUpdate.cellData;
 
-        cellGrid[cellCoord].CellData = cellData;
-        cellGrid[cellCoord].Setup();
+        CellUpdateData cellUpdateData = new()
+        {
+            cellCoord = cell.Coord,
+            cellData = cell.CellData
+        };
+
+        gameLogic.UpdateTileTypeGrid(cellUpdateData);
+
+        cellGrid[cell.Coord] = cell;
     }
 }
