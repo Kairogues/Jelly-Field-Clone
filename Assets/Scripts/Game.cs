@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
+    [SerializeField] private bool isTesting;
+
+
+
     [SerializeField] private GameLogic gameLogic;
     [SerializeField] private Cell cellPrefab;
     private Grid2D<Cell> cellGrid;
@@ -37,6 +41,11 @@ public class Game : MonoBehaviour
 
     public void Process()
     {
+        if (isTesting)
+        {
+            gameLogic.Test();
+            return;
+        }
         if (idleDuration > 0f)
         {
             idleDuration -= Time.deltaTime;
@@ -53,7 +62,10 @@ public class Game : MonoBehaviour
             return;
         }
 
-        // Handle Input queue (pop a move)
+        if (acceptInputCell)
+        {
+            HandleCellUpdateQueue();
+        }
 
         gameLogic.ScanForMatches();
 
@@ -92,9 +104,12 @@ public class Game : MonoBehaviour
     }
 
 
-    public void UpdateCellQueueHandle()
+    public void HandleCellUpdateQueue()
     {
-        CellUpdateData cellUpdate = cellUpdateQueue.Dequeue();
+        if (!cellUpdateQueue.TryDequeue(out CellUpdateData cellUpdate))
+        {
+            return;
+        }
         gameLogic.UpdateTileTypeGrid(cellUpdate);
         int2 cellCoord = cellUpdate.cellCoord;
         CellData cellData = cellUpdate.cellData;

@@ -430,8 +430,7 @@ MonoBehaviour:
   game: {fileID: 458384365}
   gameLogic: {fileID: 458384362}
   levels:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 4ef29beb0e9d4e846b318eb0c46298fc, type: 2}
 --- !u!1 &458384361
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,6 +488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 149e0dabf65cc5243ac8b34dd7579a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game
+  isTesting: 1
   gameLogic: {fileID: 458384362}
   cellPrefab: {fileID: 5207521122011265716, guid: c3c884ef56d82ce498e0bcc50b8f8fa3, type: 3}
 --- !u!1 &767302246

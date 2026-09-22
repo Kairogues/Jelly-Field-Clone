@@ -5,31 +5,33 @@ using Unity.Mathematics;
 public class GameLogic : MonoBehaviour
 {
     private Level currentLevel;
-    private GoalTracker goalTracker = new();
+    private GoalTracker goalTracker = new GoalTracker();
     public void SetLevelLayout(Level level)
     {
         currentLevel = level;
         goalTracker.SetupGoal(currentLevel.goals);
     }
-
+    private CellFiller cellFiller = new();
     private Grid2D<TileType> tileTypeGrid;
     private Dictionary<TileType, List<MatchConnection>> matchConnections = new();
     private Dictionary<TileType, MatchCellGraph> matchCellGraph = new();
     private List<MatchGroup> matchGroups = new();
+    private HashSet<int2> cellToFill = new();
     private HashSet<MatchGroup> neededMatchGroups = new();
     
 
     public int TileGridWidth => tileTypeGrid.SizeX;
     public int TileGridHeight => tileTypeGrid.SizeY;
     public int2 TileGridSize => new(TileGridWidth, TileGridHeight);
-    public int CellGridWidth => GlobalTileCoordToCellCoord(TileGridWidth).x;
-    public int CellGridHeight => GlobalTileCoordToCellCoord(TileGridWidth).y;
+    public int CellGridWidth => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridWidth).x;
+    public int CellGridHeight => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridWidth).y;
     public int2 CellGridSize => new(CellGridWidth, CellGridHeight);
     public bool HasMatches => !(matchConnections.Count == 0);
     public bool NeedsFilling { get; private set; }
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
     public CellDataGrid LevelLayout => currentLevel.levelLayout;
     public List<MatchGroup> MatchGroups => matchGroups;
+
 
 
     #region Setup
@@ -48,8 +50,8 @@ public class GameLogic : MonoBehaviour
             for (int y = 0; y < tileTypeGrid.SizeY; y++)
             {
                 int2 globalTileCoord = new(x, y);
-                int2 cellCoord = GlobalTileCoordToCellCoord(globalTileCoord);
-                int2 localTileCoord = GlobalTileCoordToLocalTileCoord(globalTileCoord);
+                int2 cellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(globalTileCoord);
+                int2 localTileCoord = CoordinateConverter.GlobalTileCoordToLocalTileCoord(globalTileCoord);
                 tileTypeGrid[globalTileCoord] = LevelLayout[cellCoord][localTileCoord];
             }
         }
@@ -57,7 +59,6 @@ public class GameLogic : MonoBehaviour
         //PrintAllElement(true);
     }
     #endregion
-
 
 
     #region ScanForMatches
@@ -112,9 +113,9 @@ public class GameLogic : MonoBehaviour
             MatchConnection matchConnection = new()
             {
                 firstTileCoord = firstTileCoord,
-                firstCellCoord = GlobalTileCoordToCellCoord(firstTileCoord),
+                firstCellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(firstTileCoord),
                 secondTileCoord = secondTileCoord,
-                secondCellCoord = GlobalTileCoordToCellCoord(secondTileCoord),
+                secondCellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(secondTileCoord),
                 tileType = tileTypeGrid[firstTileCoord]
             };
 
@@ -139,7 +140,7 @@ public class GameLogic : MonoBehaviour
         }
 
         // Belongs to the same cell
-        if (GlobalTileCoordToCellCoord(firstTileCoord).Equals(GlobalTileCoordToCellCoord(secondTileCoord)))
+        if (CoordinateConverter.GlobalTileCoordToCellCoord(firstTileCoord).Equals(CoordinateConverter.GlobalTileCoordToCellCoord(secondTileCoord)))
         {
             return false;
         }
@@ -243,7 +244,7 @@ public class GameLogic : MonoBehaviour
                 {
                     for (int y = 0; y < CellData.CELL_SIZE; y++)
                     {
-                        int2 globalTileCoord = CellCoordWithLocalTileCoordToGlobalTileCoord(currentCell, new(x, y));
+                        int2 globalTileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(currentCell, new(x, y));
                         if (tileTypeGrid[globalTileCoord] == tileType)
                         {
                             matchGroup.matchGroupByTile.Add(globalTileCoord);
@@ -269,11 +270,11 @@ public class GameLogic : MonoBehaviour
     #endregion
 
 
-
     #region Process Matches
     public void ProcessMatches()
     {
         neededMatchGroups.Clear();
+        cellToFill.Clear();
 
         for (int i = 0; i < matchGroups.Count; i++)
         {
@@ -287,6 +288,8 @@ public class GameLogic : MonoBehaviour
                     }
                 }
 
+                cellToFill.Add(CoordinateConverter.GlobalTileCoordToCellCoord(tileCoord));
+
                 tileTypeGrid[tileCoord] = TileType.EMPTY;
             }
         }
@@ -296,14 +299,15 @@ public class GameLogic : MonoBehaviour
     #endregion
 
 
-
     #region Recover After Matches
     public void FillGridAfterMatches()
     {
-
+        foreach (int2 cellCoord in cellToFill)
+        {
+            cellFiller.FillCell(cellCoord, tileTypeGrid);
+        }
 
         NeedsFilling = false;
-        ScanForMatches();
     }
     #endregion
 
@@ -324,21 +328,30 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    private int2 GlobalTileCoordToCellCoord(int2 coord)
+    #region Debug function
+    public void Test()
     {
-        return new(coord.x / CellData.CELL_SIZE, coord.y / CellData.CELL_SIZE);
-    }
-
-
-    private int2 GlobalTileCoordToLocalTileCoord(int2 coord)
-    {
-        return new(coord.x % CellData.CELL_SIZE, coord.y % CellData.CELL_SIZE);
-    }
-
-
-    private int2 CellCoordWithLocalTileCoordToGlobalTileCoord(int2 cellCoord, int2 tileCoord)
-    {
-        return new(cellCoord.x * CellData.CELL_SIZE + tileCoord.x, cellCoord.y * CellData.CELL_SIZE + tileCoord.y);
+        int hasShown = 0;
+        if (hasShown != 2)
+        {
+            hasShown += 1;
+            Debug.Log("BEFORE");
+            Debug.Log(tileTypeGrid[0, 0]);
+            Debug.Log(tileTypeGrid[0, 1]);
+            Debug.Log(tileTypeGrid[1, 0]);
+            Debug.Log(tileTypeGrid[1, 1]);
+        }
+        cellToFill.Add(new(0,0));
+        FillGridAfterMatches();
+        if (hasShown != 2)
+        {
+            hasShown += 1;
+            Debug.Log("AFTER");
+            Debug.Log(tileTypeGrid[0, 0]);
+            Debug.Log(tileTypeGrid[0, 1]);
+            Debug.Log(tileTypeGrid[1, 0]);
+            Debug.Log(tileTypeGrid[1, 1]);
+        }
     }
 
 
@@ -401,4 +414,5 @@ public class GameLogic : MonoBehaviour
             Debug.Log(matchGroups[i]);
         }
     }
+    #endregion
 }
