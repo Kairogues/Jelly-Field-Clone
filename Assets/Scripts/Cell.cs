@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Cell : MonoBehaviour
 {
@@ -31,6 +29,8 @@ public class Cell : MonoBehaviour
         {
             availableBlocks.Enqueue(tileBlocks[i]);
         }
+
+
     }
 
 
@@ -46,7 +46,7 @@ public class Cell : MonoBehaviour
             availableBlock.Setup(
                 Vector3.zero, 
                 Vector3.zero, 
-                Vector3.one, 
+                new Vector3(1f, 1f, 1f), 
                 cellData[new(0, 0)]
             );
             cellBlockPointer[0, 0] = availableBlock;
@@ -61,7 +61,7 @@ public class Cell : MonoBehaviour
             availableBlock.Setup(
                 new Vector3(-0.25f, 0f, 0f), 
                 new Vector3(0f, 0f, 0f), 
-                new Vector3(0.5f, 0.5f, 1f), 
+                new Vector3(0.5f, 1f, 1f), 
                 cellData[new(0, 0)]
             );
             cellBlockPointer[0, 0] = availableBlock;
@@ -74,7 +74,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, 0f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 1f), 
+                    new Vector3(0.5f, 1f, 1f), 
                     cellData[new(1, 0)]
                 );
                 cellBlockPointer[1, 0] = availableBlock;
@@ -87,7 +87,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, -0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 0.5f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 0)]
                 );
                 cellBlockPointer[1, 0] = availableBlock;
@@ -96,7 +96,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, 0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 0.5f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 1)]
                 );
                 cellBlockPointer[1, 1] = availableBlock;
@@ -109,7 +109,7 @@ public class Cell : MonoBehaviour
             availableBlock.Setup(
                 new Vector3(0f, 0f, -0.25f), 
                 new Vector3(0f, 0f, 0f), 
-                new Vector3(1f, 0.5f, 0.5f), 
+                new Vector3(1f, 1f, 0.5f), 
                 cellData[new(0, 0)]
             );
             cellBlockPointer[0, 0] = availableBlock;
@@ -122,7 +122,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0f, 0f, 0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(1f, 0.5f, 0.5f), 
+                    new Vector3(1f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
                 cellBlockPointer[0, 1] = availableBlock;
@@ -135,7 +135,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(-0.25f, 0f, 0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 0.5f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
                 cellBlockPointer[0, 1] = availableBlock;
@@ -144,7 +144,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, 0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 0.5f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 1)]
                 );
                 cellBlockPointer[1, 1] = availableBlock;
@@ -155,9 +155,9 @@ public class Cell : MonoBehaviour
         {
             CellBlock availableBlock = availableBlocks.Dequeue();
             availableBlock.Setup(
-                new Vector3(-0.25f, 0f, -0.50f), 
+                new Vector3(-0.25f, 0f, -0.250f), 
                 new Vector3(0f, 0f, 0f), 
-                new Vector3(0.5f, 0.5f, 0.5f), 
+                new Vector3(0.5f, 1f, 0.5f), 
                 cellData[new(0, 0)]
             );
             cellBlockPointer[0, 0] = availableBlock;
@@ -169,7 +169,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0f, 0f, 0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(1f, 0.5f, 0.5f), 
+                    new Vector3(1f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
                 cellBlockPointer[0, 1] = availableBlock;
@@ -179,7 +179,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, -0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 0.5f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 0)]
                 );
                 cellBlockPointer[1, 0] = availableBlock;
@@ -191,7 +191,7 @@ public class Cell : MonoBehaviour
                 availableBlock.Setup(
                     new Vector3(-0.25f, 0f, 0.25f), 
                     new Vector3(0f, 0f, 0f), 
-                    new Vector3(0.5f, 0.5f, 0.5f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
                 cellBlockPointer[0, 1] = availableBlock;
@@ -203,19 +203,19 @@ public class Cell : MonoBehaviour
                     availableBlock.Setup(
                         new Vector3(0.25f, 0f, 0f), 
                         new Vector3(0f, 0f, 0f), 
-                        new Vector3(0.5f, 0.5f, 1f), 
+                        new Vector3(0.5f, 1f, 1f), 
                         cellData[new(1, 0)]
                     );
                     cellBlockPointer[1, 0] = availableBlock;
                 }
                 // 3 !4
-                else if (cellData[new(1, 0)] == cellData[new(1, 1)])
+                else if (cellData[new(1, 0)] != cellData[new(1, 1)])
                 {
                     availableBlock = availableBlocks.Dequeue();
                     availableBlock.Setup(
                         new Vector3(0.25f, 0f, -0.25f), 
                         new Vector3(0f, 0f, 0f), 
-                        new Vector3(0.5f, 0.5f, 0.5f), 
+                        new Vector3(0.5f, 1f, 0.5f), 
                         cellData[new(1, 0)]
                     );
                     cellBlockPointer[1, 0] = availableBlock;
@@ -224,7 +224,7 @@ public class Cell : MonoBehaviour
                     availableBlock.Setup(
                         new Vector3(0.25f, 0f, 0.25f), 
                         new Vector3(0f, 0f, 0f), 
-                        new Vector3(0.5f, 0.5f, 0.5f), 
+                        new Vector3(0.5f, 1f, 0.5f), 
                         cellData[new(1, 1)]
                     );
                     cellBlockPointer[1, 1] = availableBlock;
@@ -238,11 +238,12 @@ public class Cell : MonoBehaviour
 
     public void ProcessMatch(CellData cellData)
     {
+        this.cellData = cellData;
         for (int x = 0; x < CellData.CELL_SIZE; x++)
         {
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
-                if (cellData[x, y] == TileType.EMPTY && cellBlockPointer[x, y].isActiveAndEnabled)
+                if (cellData[x, y] == TileType.EMPTY && cellBlockPointer[x, y].IsDisplay)
                 {
                     cellBlockPointer[x, y].ProcessMatch();
                     availableBlocks.Enqueue(cellBlockPointer[x, y]);
@@ -255,8 +256,94 @@ public class Cell : MonoBehaviour
     }
 
 
-    public void FillEmpty()
+    public void FillEmpty(CellData newCellData)
     {
+        List<int2> fillTile = new();
         
+        for (int x = 0; x < CellData.CELL_SIZE; x++)
+        {
+            for (int y = 0; y < CellData.CELL_SIZE; y++)
+            {
+                if (cellData[x, y] == TileType.EMPTY && newCellData[x, y] != TileType.EMPTY)
+                {
+                    fillTile.Add(new(x, y));
+                }
+            }
+        }
+
+        if (fillTile.Count == 0)
+        {
+            return;
+        }
+        
+
+        if (fillTile.Count == 1)
+        {
+            if (newCellData[fillTile[0]] == newCellData[1 - fillTile[0].x, fillTile[0].y])
+            {
+                FillHorizontal(new(1 - fillTile[0].x, fillTile[0].y));
+            } else if (newCellData[fillTile[0]] == newCellData[fillTile[0].x, 1 - fillTile[0].y])
+            {
+                FillVertical(new(fillTile[0].x, 1 - fillTile[0].y));
+            }
+            return;
+        } else if (fillTile.Count == 2)
+        {
+            if (fillTile[0].x == fillTile[1].x) // Same col
+            {
+                if (cellData[fillTile[0]] == cellData[fillTile[1]])
+                {
+                    FillHorizontal(new(1 - fillTile[0].x, fillTile[0].y));
+                } else
+                {
+                    FillHorizontal(new(1 - fillTile[0].x, fillTile[0].y));
+                    FillHorizontal(new(1 - fillTile[1].x, fillTile[1].y));
+                }
+            } else // Same row
+            {
+                if (cellData[fillTile[0]] == cellData[fillTile[1]])
+                {
+                    FillVertical(new(fillTile[0].x, 1 - fillTile[0].y));
+                } else
+                {
+                    FillVertical(new(fillTile[0].x, 1 - fillTile[0].y));
+                    FillVertical(new(fillTile[1].x, 1 - fillTile[1].y));
+                }
+            }
+            return;
+        } else // 3
+        {
+            for (int x = 0; x < CellData.CELL_SIZE; x++)
+            {
+                for (int y = 0; y < CellData.CELL_SIZE; y++)
+                {
+                    if (cellData[x, y] != TileType.EMPTY)
+                    {
+                        FillDiagonal(new(x, y));
+                        return;
+                    }
+                }
+            }
+        }
+
+        Debug.LogError("Something is wrong!");
+    }
+
+
+    private void FillDiagonal(int2 start)
+    {
+        cellBlockPointer[start].GrowDiagonal(start);
+    }
+
+
+    private void FillHorizontal(int2 start)
+    {
+        cellBlockPointer[start].GrowHorizontal(start);
+    }
+
+
+    private void FillVertical(int2 start)
+    {
+        cellBlockPointer[start].GrowVertical(start);
     }
 }

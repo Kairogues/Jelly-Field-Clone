@@ -23,8 +23,8 @@ MonoBehaviour:
           - column: 0300000003000000i
       - innerTile:
           grid:
-          - column: 0400000004000000i
-          - column: 0200000003000000i
+          - column: 0700000006000000i
+          - column: 0100000003000000i
     - column:
       - innerTile:
           grid:
@@ -32,14 +32,14 @@ MonoBehaviour:
           - column: 0200000002000000i
       - innerTile:
           grid:
-          - column: 0700000006000000i
-          - column: 0700000006000000i
+          - column: 0100000001000000i
+          - column: 0200000002000000i
     - column:
       - innerTile:
           grid:
-          - column: 0300000006000000i
-          - column: 0500000005000000i
+          - column: 0300000003000000i
+          - column: 0300000003000000i
       - innerTile:
           grid:
-          - column: 0500000007000000i
-          - column: 0200000001000000i
+          - column: 0200000003000000i
+          - column: 0600000007000000i
