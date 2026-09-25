@@ -29,8 +29,8 @@ public class CellBlock : MonoBehaviour
 
     public void Setup(Vector3 positionOffset, Vector3 visualPositionOffset, Vector3 scale, TileType tileType)
     {
-        transform.position += positionOffset;
-        visual.transform.position += visualPositionOffset;
+        transform.localPosition += positionOffset;
+        visual.transform.localPosition += visualPositionOffset;
         transform.localScale = scale;
         this.tileType = tileType;
         isDisplay = true;
@@ -50,6 +50,7 @@ public class CellBlock : MonoBehaviour
     {
         // Play animation
         visual.gameObject.SetActive(false);
+        transform.localPosition = Vector3.zero;
         isDisplay = false;
     }
 
@@ -57,7 +58,6 @@ public class CellBlock : MonoBehaviour
 
     public void GrowHorizontal(int2 start)
     {
-        Debug.Log("I AM HERE");
         int signX = start.x == 0 ? -1 : 1;
         int signY = start.y == 0 ? -1 : 1;
         float amount = transform.localScale.x;

@@ -9,19 +9,27 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Game game;
     [SerializeField] private GameLogic gameLogic;
     [SerializeField] private List<Level> levels;
+    private GoalTracker goalTracker = new GoalTracker();
     private int currentLevel = 0;
 
 
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
     }
 
 
     private void Start()
     {
-        gameLogic.SetLevelLayout(levels[currentLevel]);
+        goalTracker.SetupGoal(levels[currentLevel].goals);
+        gameLogic.SetLevelLayout(levels[currentLevel].levelLayout);
         game.StartNewGame();
     }
 

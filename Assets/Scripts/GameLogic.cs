@@ -4,12 +4,10 @@ using Unity.Mathematics;
 
 public class GameLogic : MonoBehaviour
 {
-    private Level currentLevel;
-    private GoalTracker goalTracker = new GoalTracker();
-    public void SetLevelLayout(Level level)
+    private CellDataGrid cellDataGrid;
+    public void SetLevelLayout(CellDataGrid newCellDataGrid)
     {
-        currentLevel = level;
-        goalTracker.SetupGoal(currentLevel.goals);
+        cellDataGrid = newCellDataGrid;
     }
     private CellFiller cellFiller = new();
     private Grid2D<TileType> tileTypeGrid;
@@ -29,7 +27,7 @@ public class GameLogic : MonoBehaviour
     public bool HasMatches => !(matchConnections.Count == 0);
     public bool NeedsFilling { get; private set; }
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
-    public CellDataGrid LevelLayout => currentLevel.levelLayout;
+    public CellDataGrid LevelLayout => cellDataGrid;
     public List<MatchGroup> MatchGroups => matchGroups;
     public HashSet<int2> CellToFill => cellToFill;
 
@@ -38,7 +36,7 @@ public class GameLogic : MonoBehaviour
     #region Setup
     public void SetupNewGame()
     {
-        if (currentLevel == null)
+        if (cellDataGrid == null)
         {
             Debug.LogError("The currentLevel ScriptableObject is missing!");
             return;
@@ -111,6 +109,10 @@ public class GameLogic : MonoBehaviour
 
         if (IsValidMatch(firstTileCoord, secondTileCoord))
         {
+            if (hasDropped && firstTileCoord.x == 3 && firstTileCoord.y == 0)
+            {
+                Debug.Log("SCANNN");
+            }
             MatchConnection matchConnection = new()
             {
                 firstTileCoord = firstTileCoord,
@@ -281,6 +283,7 @@ public class GameLogic : MonoBehaviour
         {
             foreach (int2 tileCoord in matchGroups[i].matchGroupByTile)
             {
+                /*
                 if (goalTracker.Contribute(tileTypeGrid[tileCoord]))
                 {
                     if (!neededMatchGroups.Contains(matchGroups[i]))
@@ -288,7 +291,7 @@ public class GameLogic : MonoBehaviour
                         neededMatchGroups.Add(matchGroups[i]);
                     }
                 }
-
+                */
                 cellToFill.Add(CoordinateConverter.GlobalTileCoordToCellCoord(tileCoord));
 
                 tileTypeGrid[tileCoord] = TileType.EMPTY;
@@ -312,7 +315,7 @@ public class GameLogic : MonoBehaviour
     }
     #endregion
 
-
+    bool hasDropped = false;
     public void UpdateTileTypeGrid(CellUpdateData cellUpdateData)
     {
         int2 cellCoord = cellUpdateData.cellCoord;
@@ -324,8 +327,12 @@ public class GameLogic : MonoBehaviour
             {
                 int2 localTileCoord = new(x, y);
                 tileTypeGrid[cellCoord + localTileCoord] = cellData[localTileCoord];
+                Debug.Log("Success at cell (" + cellCoord.x + "," + cellCoord.y + "), pos " + x + ":" + y + " " + cellData[localTileCoord]);
             }
         }
+
+
+        hasDropped = true;
     }
 
 

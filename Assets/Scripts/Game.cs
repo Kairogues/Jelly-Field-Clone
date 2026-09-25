@@ -36,6 +36,7 @@ public class Game : MonoBehaviour
             for (int y = 0; y < cellGrid.SizeY; y++)
             {
                 cellGrid[x][y] = SpawnCell(cellDataGridPrototype[x][y], x, y);
+                cellGrid[x][y].DroppedCell += AddCell;
             }
         }
     }
@@ -61,13 +62,16 @@ public class Game : MonoBehaviour
         {
             FillGridAfterMatches();
             // Set idleDuration
-            idleDuration = 0.5f;
+            idleDuration = 12.5f;
             return;
         }
 
         if (acceptInputCell)
         {
             HandleIncomingCell();
+        } else
+        {
+            Debug.Log("No input");
         }
 
         gameLogic.ScanForMatches();
@@ -75,10 +79,9 @@ public class Game : MonoBehaviour
         if (gameLogic.HasMatches)
         {
             acceptInputCell = false;
-            Debug.Log("Hey");
             ProcessMatches();
             // Set idleDuration
-            idleDuration = 0.5f;
+            idleDuration = 10.5f;
             return;
         }
 
@@ -115,7 +118,7 @@ public class Game : MonoBehaviour
 
     private Cell SpawnCell(CellData cellData, float x, float y)
     {
-        GameObject cellInstance = PoolManager.Instance.Spawn(
+        GameObject cellInstance = Instantiate(
                 cellPrefab.gameObject,
                 new Vector3(x + cellOffset.x, 0, y + cellOffset.y),
                 Quaternion.identity

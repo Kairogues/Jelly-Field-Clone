@@ -1,14 +1,24 @@
+using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
+    public event Action<Cell> DroppedCell;
+
     [SerializeField] private List<CellBlock> tileBlocks = new List<CellBlock>(4);
+    [SerializeField] private MeshRenderer floor;
+    [SerializeField] private BoxCollider collider;
+    [SerializeField] private Material floorMaterial;
+    [SerializeField] private Material floorMaterialOnCursorHovering;
+    [SerializeField] private Material floorMaterialNoneTile;
     private Queue<CellBlock> availableBlocks = new Queue<CellBlock>(4);
     private Grid2D<CellBlock> cellBlockPointer = new(new(2,2));
     private CellData cellData;
     private int2 coord;
+    private bool isNoneTile = false;
+    private bool isEmptyTile = false;
 
 
     public CellData CellData
@@ -21,23 +31,84 @@ public class Cell : MonoBehaviour
         get => coord;
         set => coord = value;
     }
+    public bool IsNoneTile
+    {
+        get => isNoneTile;
+    }
 
 
-    public void Awake()
+
+    private void Awake()
     {
         for (int i = 0; i < 4; i++)
         {
             availableBlocks.Enqueue(tileBlocks[i]);
         }
-
-
     }
 
+
+    private void OnMouseEnter()
+    {
+        if (!isEmptyTile || isNoneTile)
+        {
+            MouseDragManager.Instance.HoverOverCell(null);
+        } else
+        {
+            MouseDragManager.Instance.HoverOverCell(this);
+            floor.sharedMaterial = floorMaterialOnCursorHovering;
+        }
+    }
+
+
+    private void OnMouseExit()
+    {
+        if (!isNoneTile)
+        {
+            floor.sharedMaterial = floorMaterial;
+        }
+    }
+
+
+    public void DropCellSuccess()
+    {
+        DroppedCell?.Invoke(this);
+    }
 
 
     public void Setup(CellData cellData)
     {
         this.cellData = cellData;
+        isEmptyTile = false;
+
+        if (cellData[new(0, 0)] == TileType.NONE)
+        {
+            isNoneTile = true;
+            collider.enabled = false;
+            if (MaterialLoader.Instance.materialDictionary.TryGetValue(cellData[new(0, 0)], out Material material))
+            {
+                floor.sharedMaterial = material;
+            } else
+            {
+                Debug.LogError("No material for NONE assigned in the Material Loader!");
+            }
+
+            return;
+        }
+
+        if (cellData[new(0, 0)] == TileType.EMPTY)
+        {
+            isEmptyTile = true;
+            if (MaterialLoader.Instance.materialDictionary.TryGetValue(cellData[new(0, 0)], out Material material))
+            {
+                floor.sharedMaterial = material;
+            } else
+            {
+                Debug.LogError("No material for EMPTY assigned in the Material Loader!");
+            }
+
+            return;
+        }
+
         // HARD CODE INCOMING
         // 1 2 3
         if (cellData[new(0, 0)] == cellData[new(0, 1)] && cellData[new(0, 1)] == cellData[new(1, 0)])
@@ -235,7 +306,6 @@ public class Cell : MonoBehaviour
     }
 
 
-
     public void ProcessMatch(CellData cellData)
     {
         this.cellData = cellData;
@@ -259,6 +329,7 @@ public class Cell : MonoBehaviour
     public void FillEmpty(CellData newCellData)
     {
         List<int2> fillTile = new();
+        int emptyCount = 0;
         
         for (int x = 0; x < CellData.CELL_SIZE; x++)
         {
@@ -267,8 +338,17 @@ public class Cell : MonoBehaviour
                 if (cellData[x, y] == TileType.EMPTY && newCellData[x, y] != TileType.EMPTY)
                 {
                     fillTile.Add(new(x, y));
+                } else
+                {
+                    emptyCount++;
                 }
             }
+        }
+
+        if (emptyCount == 4)
+        {
+            isEmptyTile = true;
+            return;
         }
 
         if (fillTile.Count == 0)
