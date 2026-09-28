@@ -1,22 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using System;
 
 public class GameLogic : MonoBehaviour
 {
+    public event Action<TileType> PoppedTile;
+
     private CellDataGrid cellDataGrid;
-    public void SetLevelLayout(CellDataGrid newCellDataGrid)
-    {
-        cellDataGrid = newCellDataGrid;
-    }
-    private CellFiller cellFiller = new();
     private Grid2D<TileType> tileTypeGrid;
-    private Dictionary<TileType, List<MatchConnection>> matchConnections = new();
     private Dictionary<TileType, MatchCellGraph> matchCellGraph = new();
     private List<MatchGroup> matchGroups = new();
     private HashSet<int2> cellToFill = new();
-    private HashSet<MatchGroup> neededMatchGroups = new();
-    
+
+    private CellFiller cellFiller = new();
 
     public int TileGridWidth => tileTypeGrid.SizeX;
     public int TileGridHeight => tileTypeGrid.SizeY;
@@ -24,12 +21,16 @@ public class GameLogic : MonoBehaviour
     public int CellGridWidth => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridWidth).x;
     public int CellGridHeight => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridWidth).y;
     public int2 CellGridSize => new(CellGridWidth, CellGridHeight);
-    public bool HasMatches => !(matchConnections.Count == 0);
-    public bool NeedsFilling { get; private set; }
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
-    public CellDataGrid LevelLayout => cellDataGrid;
+    public CellDataGrid CellDataGrid
+    {
+        get => cellDataGrid;
+        set => cellDataGrid = value;
+    }
     public List<MatchGroup> MatchGroups => matchGroups;
     public HashSet<int2> CellToFill => cellToFill;
+    public bool HasMatches => !(matchCellGraph.Count == 0);
+    public bool NeedsFilling { get; private set; }
 
 
 
@@ -42,7 +43,7 @@ public class GameLogic : MonoBehaviour
             return;
         }
 
-        tileTypeGrid = new Grid2D<TileType>(LevelLayout.Size * CellData.CELL_SIZE);
+        tileTypeGrid = new Grid2D<TileType>(CellDataGrid.Size * CellData.CELL_SIZE);
 
         for (int x = 0; x < tileTypeGrid.SizeX; x++)
         {
@@ -51,7 +52,7 @@ public class GameLogic : MonoBehaviour
                 int2 globalTileCoord = new(x, y);
                 int2 cellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(globalTileCoord);
                 int2 localTileCoord = CoordinateConverter.GlobalTileCoordToLocalTileCoord(globalTileCoord);
-                tileTypeGrid[globalTileCoord] = LevelLayout[cellCoord][localTileCoord];
+                tileTypeGrid[globalTileCoord] = CellDataGrid[cellCoord][localTileCoord];
             }
         }
 
@@ -63,26 +64,22 @@ public class GameLogic : MonoBehaviour
     #region ScanForMatches
     public void ScanForMatches()
     {
-        ConstructConnectionList();
-        //PrintMatchConnectionsDict();
+        ConstructMatchCellGraph();
+        //PrintMatchCellGraph();
 
         if (!HasMatches)
         {
             return;
         }
-        
-        ConstructMatchCellGraph();
-        //PrintMatchCellGraph();
 
         ConstructMatchGroup();
-        //PrintMatchGroups();
+        PrintMatchGroups();
     }
 
 
-
-    private void ConstructConnectionList()
+    private void ConstructMatchCellGraph()
     {
-        matchConnections.Clear();
+        matchCellGraph.Clear();
 
         for (int x = 0; x < TileGridWidth; x++)
         {
@@ -102,33 +99,27 @@ public class GameLogic : MonoBehaviour
 
     private void CheckForConnection(int2 firstTileCoord, int2 secondTileCoord)
     {
-        if (!tileTypeGrid.AreInRangeCoordinates(firstTileCoord) || !tileTypeGrid.AreInRangeCoordinates(secondTileCoord))
+        if (!tileTypeGrid.AreInGridRange(firstTileCoord) || !tileTypeGrid.AreInGridRange(secondTileCoord))
         {
             return;
         }
 
         if (IsValidMatch(firstTileCoord, secondTileCoord))
         {
-            if (hasDropped && firstTileCoord.x == 3 && firstTileCoord.y == 0)
+            if (!matchCellGraph.TryGetValue(tileTypeGrid[firstTileCoord], out MatchCellGraph graph))
             {
-                Debug.Log("SCANNN");
-            }
-            MatchConnection matchConnection = new()
-            {
-                firstTileCoord = firstTileCoord,
-                firstCellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(firstTileCoord),
-                secondTileCoord = secondTileCoord,
-                secondCellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(secondTileCoord),
-                tileType = tileTypeGrid[firstTileCoord]
-            };
-
-            if (!matchConnections.TryGetValue(tileTypeGrid[firstTileCoord], out List<MatchConnection> list))
-            {
-                list = new List<MatchConnection>();
-                matchConnections.Add(tileTypeGrid[firstTileCoord], list);
+                graph = new MatchCellGraph()
+                {
+                    edges = new Dictionary<int2, HashSet<int2>>()
+                };
+                matchCellGraph.Add(tileTypeGrid[firstTileCoord], graph);
             }
 
-            list.Add(matchConnection);
+            int2 firstCellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(firstTileCoord);
+            int2 secondCellCoord = CoordinateConverter.GlobalTileCoordToCellCoord(secondTileCoord);
+
+            graph.AddEdge(firstCellCoord, secondCellCoord);
+            graph.AddEdge(secondCellCoord, firstCellCoord);
         }
     }
 
@@ -150,7 +141,6 @@ public class GameLogic : MonoBehaviour
 
         // Not adjacent
         int2 difference = firstTileCoord - secondTileCoord;
-
         if (math.lengthsq(difference) != 1)
         {
             return false;
@@ -163,30 +153,6 @@ public class GameLogic : MonoBehaviour
         }
 
         return true;
-    }
-
-
-    private void ConstructMatchCellGraph()
-    {
-        matchCellGraph.Clear();
-        
-        foreach (KeyValuePair<TileType, List<MatchConnection>> item in matchConnections)
-        {
-            for (int i = 0; i < item.Value.Count; i++)
-            {
-                if (!matchCellGraph.TryGetValue(item.Key, out MatchCellGraph graph))
-                {
-                    graph = new MatchCellGraph()
-                    {
-                        edges = new()
-                    };
-                    matchCellGraph.Add(item.Key, graph);
-                }
-
-                graph.AddEdge(item.Value[i].firstCellCoord, item.Value[i].secondCellCoord);
-                graph.AddEdge(item.Value[i].secondCellCoord, item.Value[i].firstCellCoord);
-            }
-        }
     }
 
 
@@ -205,26 +171,18 @@ public class GameLogic : MonoBehaviour
     {
         Queue<int2> trackingCell = new();
         HashSet<int2> visitedCell = new();
-        bool hasVisitedAll = false;
 
         while (visitedCell.Count < matchCellGraph[tileType].edges.Count)
         {
             // Find one random unvisited cell
             int2 startCell = new();
-            foreach (KeyValuePair<int2, List<int2>> item in matchCellGraph[tileType].edges)
+            foreach (KeyValuePair<int2, HashSet<int2>> item in matchCellGraph[tileType].edges)
             {
                 if (!visitedCell.Contains(item.Key))
                 {
                     startCell = item.Key;
                     break;
                 }
-
-                hasVisitedAll = true;
-            }
-
-            if (hasVisitedAll)
-            {
-                break;
             }
 
             MatchGroup matchGroup = new()
@@ -276,24 +234,14 @@ public class GameLogic : MonoBehaviour
     #region Process Matches
     public void ProcessMatches()
     {
-        neededMatchGroups.Clear();
         cellToFill.Clear();
 
         for (int i = 0; i < matchGroups.Count; i++)
         {
             foreach (int2 tileCoord in matchGroups[i].matchGroupByTile)
             {
-                /*
-                if (goalTracker.Contribute(tileTypeGrid[tileCoord]))
-                {
-                    if (!neededMatchGroups.Contains(matchGroups[i]))
-                    {
-                        neededMatchGroups.Add(matchGroups[i]);
-                    }
-                }
-                */
                 cellToFill.Add(CoordinateConverter.GlobalTileCoordToCellCoord(tileCoord));
-
+                PoppedTile?.Invoke(tileTypeGrid[tileCoord]);
                 tileTypeGrid[tileCoord] = TileType.EMPTY;
             }
         }
@@ -406,17 +354,6 @@ public class GameLogic : MonoBehaviour
                     Debug.Log("[1,1]: " + TileTypeGrid[x + 1, y + 1]);
                 }
             }
-        }
-    }
-
-
-    private void PrintMatchConnectionsDict()
-    {
-        Debug.Log("MATCH CONNECTIONS");
-        foreach (KeyValuePair<TileType, List<MatchConnection>> kvp in matchConnections)
-        {
-            string items = kvp.Value != null ? string.Join(", ", kvp.Value) : "null";
-            Debug.Log($"Color [{kvp.Key}]: [{items}]");
         }
     }
 

@@ -7,7 +7,6 @@ using Unity.Mathematics;
 public class CellData
 {
     public static int CELL_SIZE = 2;
-
     [SerializeField] private Grid2D<TileType> innerTile = new Grid2D<TileType>(new(CELL_SIZE, CELL_SIZE));
 
     public TileType this[int x, int y]
@@ -28,6 +27,8 @@ public class CellData
         set => innerTile = value;
     }
 
+
+
     public CellData(
             TileType leftBot = TileType.EMPTY,
             TileType leftTop = TileType.EMPTY,
@@ -43,15 +44,19 @@ public class CellData
     }
 
 
-    public TileType GetTileType(int2 coord)
+    public TileType GetTileTypeWithGlobalTileCoord(int2 coord)
     {
-        return innerTile[coord];
+        int localX = coord.x % CELL_SIZE;
+        int localY = coord.y % CELL_SIZE;
+        return innerTile[localX, localY];
     }
 
 
-    public TileType GetTileType(int x, int y)
+    public TileType GetTileTypeWithGlobalTileCoord(int x, int y)
     {
-        return innerTile[x, y];
+        int localX = x % CELL_SIZE;
+        int localY = y % CELL_SIZE;
+        return innerTile[localX, localY];
     }
 
 

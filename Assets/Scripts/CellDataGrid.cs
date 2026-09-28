@@ -11,14 +11,11 @@ public struct CellDataColumn
 [CreateAssetMenu(fileName = "CellDataGrid", menuName = "CellDataGrid")]
 public class CellDataGrid : ScriptableObject
 {
-
     [Range(1, 20)]
     [SerializeField] public int width;
     [Range(1, 20)]
     [SerializeField] public int height;
     [SerializeField] public Grid2D<CellData> cellDataGrid;
-
-
 
     public CellData this[int x, int y]
     {
@@ -33,6 +30,7 @@ public class CellDataGrid : ScriptableObject
     }
 
     public int2 Size => new(width, height);
+
 
 
     private void OnValidate()

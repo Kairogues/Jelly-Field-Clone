@@ -7,13 +7,13 @@ public class Cell : MonoBehaviour
 {
     public event Action<Cell> DroppedCell;
 
-    [SerializeField] private List<CellBlock> tileBlocks = new List<CellBlock>(4);
-    [SerializeField] private MeshRenderer floor;
+    [SerializeField] private CellBlock cellBlockPrefab;
+
+    [SerializeField] private MeshRenderer floorMeshRenderer;
     [SerializeField] private BoxCollider collider;
-    [SerializeField] private Material floorMaterial;
+    [SerializeField] private Material floorMaterialNormal;
     [SerializeField] private Material floorMaterialOnCursorHovering;
     [SerializeField] private Material floorMaterialNoneTile;
-    private Queue<CellBlock> availableBlocks = new Queue<CellBlock>(4);
     private Grid2D<CellBlock> cellBlockPointer = new(new(2,2));
     private CellData cellData;
     private int2 coord;
@@ -40,9 +40,19 @@ public class Cell : MonoBehaviour
 
     private void Awake()
     {
+        /*
         for (int i = 0; i < 4; i++)
         {
             availableBlocks.Enqueue(tileBlocks[i]);
+        }
+        */
+
+        for (int x = 0; x < CellData.CELL_SIZE; x++)
+        {
+            for (int y = 0; y < CellData.CELL_SIZE; y++)
+            {
+                cellBlockPointer[x, y] = null;
+            }
         }
     }
 
@@ -55,7 +65,7 @@ public class Cell : MonoBehaviour
         } else
         {
             MouseDragManager.Instance.HoverOverCell(this);
-            floor.sharedMaterial = floorMaterialOnCursorHovering;
+            floorMeshRenderer.sharedMaterial = floorMaterialOnCursorHovering;
         }
     }
 
@@ -64,7 +74,7 @@ public class Cell : MonoBehaviour
     {
         if (!isNoneTile)
         {
-            floor.sharedMaterial = floorMaterial;
+            floorMeshRenderer.sharedMaterial = floorMaterialNormal;
         }
     }
 
@@ -86,7 +96,7 @@ public class Cell : MonoBehaviour
             collider.enabled = false;
             if (MaterialLoader.Instance.materialDictionary.TryGetValue(cellData[new(0, 0)], out Material material))
             {
-                floor.sharedMaterial = material;
+                floorMeshRenderer.sharedMaterial = material;
             } else
             {
                 Debug.LogError("No material for NONE assigned in the Material Loader!");
@@ -100,7 +110,7 @@ public class Cell : MonoBehaviour
             isEmptyTile = true;
             if (MaterialLoader.Instance.materialDictionary.TryGetValue(cellData[new(0, 0)], out Material material))
             {
-                floor.sharedMaterial = material;
+                floorMeshRenderer.sharedMaterial = material;
             } else
             {
                 Debug.LogError("No material for EMPTY assigned in the Material Loader!");
@@ -113,6 +123,18 @@ public class Cell : MonoBehaviour
         // 1 2 3
         if (cellData[new(0, 0)] == cellData[new(0, 1)] && cellData[new(0, 1)] == cellData[new(1, 0)])
         {
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, transform);
+            cellBlockA.Setup(
+                Vector3.zero, 
+                Vector3.zero, 
+                new Vector3(1f, 1f, 1f), 
+                cellData[new(0, 0)]
+            );
+            cellBlockPointer[0, 0] = cellBlockA;
+            cellBlockPointer[0, 1] = cellBlockA;
+            cellBlockPointer[1, 0] = cellBlockA;
+            cellBlockPointer[1, 1] = cellBlockA;
+            /*
             CellBlock availableBlock = availableBlocks.Dequeue();
             availableBlock.Setup(
                 Vector3.zero, 
@@ -124,10 +146,21 @@ public class Cell : MonoBehaviour
             cellBlockPointer[0, 1] = availableBlock;
             cellBlockPointer[1, 0] = availableBlock;
             cellBlockPointer[1, 1] = availableBlock;
+            */
         }
         // 1 2 !3
         else if (cellData[new(0, 0)] == cellData[new(0, 1)] && cellData[new(0, 1)] != cellData[new(1, 0)])
         {
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, transform);
+            cellBlockA.Setup(
+                new Vector3(-0.25f, 0f, 0f), 
+                new Vector3(0f, 0f, 0f), 
+                new Vector3(0.5f, 1f, 1f), 
+                cellData[new(0, 0)]
+            );
+            cellBlockPointer[0, 0] = cellBlockA;
+            cellBlockPointer[0, 1] = cellBlockA;
+            /*
             CellBlock availableBlock = availableBlocks.Dequeue();
             availableBlock.Setup(
                 new Vector3(-0.25f, 0f, 0f), 
@@ -137,10 +170,21 @@ public class Cell : MonoBehaviour
             );
             cellBlockPointer[0, 0] = availableBlock;
             cellBlockPointer[0, 1] = availableBlock;
+            */
 
             // 3 4
             if (cellData[new(1, 0)] == cellData[new(1, 1)])
             {
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, transform);
+                cellBlockB.Setup(
+                    new Vector3(0.25f, 0f, 0f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 1f), 
+                    cellData[new(1, 0)]
+                );
+                cellBlockPointer[1, 0] = cellBlockB;
+                cellBlockPointer[1, 1] = cellBlockB;
+                /*
                 availableBlock = availableBlocks.Dequeue();
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, 0f), 
@@ -150,10 +194,29 @@ public class Cell : MonoBehaviour
                 );
                 cellBlockPointer[1, 0] = availableBlock;
                 cellBlockPointer[1, 1] = availableBlock;
+                */
             }
             // 3 !4
             else if (cellData[new(1, 0)] != cellData[new(1, 1)])
             {
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, transform);
+                cellBlockB.Setup(
+                    new Vector3(0.25f, 0f, -0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
+                    cellData[new(1, 0)]
+                );
+                cellBlockPointer[1, 0] = cellBlockB;
+
+                CellBlock cellBlockC = Instantiate(cellBlockPrefab, transform);
+                cellBlockC.Setup(
+                    new Vector3(0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
+                    cellData[new(1, 1)]
+                );
+                cellBlockPointer[1, 1] = cellBlockC;
+                /*
                 availableBlock = availableBlocks.Dequeue();
                 availableBlock.Setup(
                     new Vector3(0.25f, 0f, -0.25f), 
@@ -171,11 +234,22 @@ public class Cell : MonoBehaviour
                     cellData[new(1, 1)]
                 );
                 cellBlockPointer[1, 1] = availableBlock;
+                */
             }
         }
         // 1 !2 3
         else if (cellData[new(0, 0)] != cellData[new(0, 1)] && cellData[new(0, 0)] == cellData[new(1, 0)])
         {
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, transform);
+            cellBlockA.Setup(
+                new Vector3(0f, 0f, -0.25f), 
+                new Vector3(0f, 0f, 0f), 
+                new Vector3(1f, 1f, 0.5f), 
+                cellData[new(0, 0)]
+            );
+            cellBlockPointer[0, 0] = cellBlockA;
+            cellBlockPointer[1, 0] = cellBlockA;
+            /*
             CellBlock availableBlock = availableBlocks.Dequeue();
             availableBlock.Setup(
                 new Vector3(0f, 0f, -0.25f), 
@@ -185,10 +259,20 @@ public class Cell : MonoBehaviour
             );
             cellBlockPointer[0, 0] = availableBlock;
             cellBlockPointer[1, 0] = availableBlock;
-
+            */
             // 2 4
             if (cellData[new(0, 1)] == cellData[new(1, 1)])
             {
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, transform);
+                cellBlockB.Setup(
+                    new Vector3(0f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(1f, 1f, 0.5f), 
+                    cellData[new(0, 1)]
+                );
+                cellBlockPointer[0, 1] = cellBlockB;
+                cellBlockPointer[1, 1] = cellBlockB;
+                /*
                 availableBlock = availableBlocks.Dequeue();
                 availableBlock.Setup(
                     new Vector3(0f, 0f, 0.25f), 
@@ -198,10 +282,29 @@ public class Cell : MonoBehaviour
                 );
                 cellBlockPointer[0, 1] = availableBlock;
                 cellBlockPointer[1, 1] = availableBlock;
+                */
             }
             // 2 !4
             else if (cellData[new(0, 1)] != cellData[new(1, 1)])
             {
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, transform);
+                cellBlockB.Setup(
+                    new Vector3(-0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
+                    cellData[new(0, 1)]
+                );
+                cellBlockPointer[0, 1] = cellBlockB;
+
+                CellBlock cellBlockC = Instantiate(cellBlockPrefab, transform);
+                cellBlockC.Setup(
+                    new Vector3(0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
+                    cellData[new(1, 1)]
+                );
+                cellBlockPointer[1, 1] = cellBlockC;
+                /*
                 availableBlock = availableBlocks.Dequeue();
                 availableBlock.Setup(
                     new Vector3(-0.25f, 0f, 0.25f), 
@@ -219,11 +322,21 @@ public class Cell : MonoBehaviour
                     cellData[new(1, 1)]
                 );
                 cellBlockPointer[1, 1] = availableBlock;
+                */
             }
         }
         // 1 !2 !3
         else if (cellData[new(0, 0)] != cellData[new(0, 1)] && cellData[new(0, 0)] != cellData[new(1, 0)])
         {
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, transform);
+            cellBlockA.Setup(
+                new Vector3(-0.25f, 0f, -0.250f), 
+                new Vector3(0f, 0f, 0f), 
+                new Vector3(0.5f, 1f, 0.5f), 
+                cellData[new(0, 0)]
+            );
+            cellBlockPointer[0, 0] = cellBlockA;
+            /*
             CellBlock availableBlock = availableBlocks.Dequeue();
             availableBlock.Setup(
                 new Vector3(-0.25f, 0f, -0.250f), 
@@ -232,10 +345,30 @@ public class Cell : MonoBehaviour
                 cellData[new(0, 0)]
             );
             cellBlockPointer[0, 0] = availableBlock;
+            */
 
             // 2 4
             if (cellData[new(0, 1)] == cellData[new(1, 1)])
             {
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, transform);
+                cellBlockB.Setup(
+                    new Vector3(0f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(1f, 1f, 0.5f), 
+                    cellData[new(0, 1)]
+                );
+                cellBlockPointer[0, 1] = cellBlockB;
+                cellBlockPointer[1, 1] = cellBlockB;
+
+                CellBlock cellBlockC = Instantiate(cellBlockPrefab, transform);
+                cellBlockC.Setup(
+                    new Vector3(0.25f, 0f, -0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
+                    cellData[new(1, 0)]
+                );
+                cellBlockPointer[1, 0] = cellBlockC;
+                /*
                 availableBlock = availableBlocks.Dequeue();
                 availableBlock.Setup(
                     new Vector3(0f, 0f, 0.25f), 
@@ -254,10 +387,20 @@ public class Cell : MonoBehaviour
                     cellData[new(1, 0)]
                 );
                 cellBlockPointer[1, 0] = availableBlock;
+                */
             }
             // 2 !4
             else if (cellData[new(0, 1)] != cellData[new(1, 1)])
             {
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, transform);
+                cellBlockB.Setup(
+                    new Vector3(-0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
+                    new Vector3(0.5f, 1f, 0.5f), 
+                    cellData[new(0, 1)]
+                );
+                cellBlockPointer[0, 1] = cellBlockB;
+                /*
                 availableBlock = availableBlocks.Dequeue();
                 availableBlock.Setup(
                     new Vector3(-0.25f, 0f, 0.25f), 
@@ -266,10 +409,19 @@ public class Cell : MonoBehaviour
                     cellData[new(0, 1)]
                 );
                 cellBlockPointer[0, 1] = availableBlock;
-
+                */
                 // 3 4
                 if (cellData[new(1, 0)] == cellData[new(1, 1)])
                 {
+                    CellBlock cellBlockC = Instantiate(cellBlockPrefab, transform);
+                    cellBlockC.Setup(
+                        new Vector3(0.25f, 0f, 0f), 
+                        new Vector3(0f, 0f, 0f), 
+                        new Vector3(0.5f, 1f, 1f), 
+                        cellData[new(1, 0)]
+                    );
+                    cellBlockPointer[1, 0] = cellBlockC;
+                    /*
                     availableBlock = availableBlocks.Dequeue();
                     availableBlock.Setup(
                         new Vector3(0.25f, 0f, 0f), 
@@ -278,10 +430,29 @@ public class Cell : MonoBehaviour
                         cellData[new(1, 0)]
                     );
                     cellBlockPointer[1, 0] = availableBlock;
+                    */
                 }
                 // 3 !4
                 else if (cellData[new(1, 0)] != cellData[new(1, 1)])
                 {
+                    CellBlock cellBlockC = Instantiate(cellBlockPrefab, transform);
+                    cellBlockC.Setup(
+                        new Vector3(0.25f, 0f, -0.25f), 
+                        new Vector3(0f, 0f, 0f), 
+                        new Vector3(0.5f, 1f, 0.5f), 
+                        cellData[new(1, 0)]
+                    );
+                    cellBlockPointer[1, 0] = cellBlockC;
+
+                    CellBlock cellBlockD = Instantiate(cellBlockPrefab, transform);
+                    cellBlockD.Setup(
+                        new Vector3(0.25f, 0f, 0.25f), 
+                        new Vector3(0f, 0f, 0f), 
+                        new Vector3(0.5f, 1f, 0.5f), 
+                        cellData[new(1, 1)]
+                    );
+                    cellBlockPointer[1, 1] = cellBlockD;
+                    /*
                     availableBlock = availableBlocks.Dequeue();
                     availableBlock.Setup(
                         new Vector3(0.25f, 0f, -0.25f), 
@@ -299,6 +470,7 @@ public class Cell : MonoBehaviour
                         cellData[new(1, 1)]
                     );
                     cellBlockPointer[1, 1] = availableBlock;
+                    */
                 }
             }
         }
@@ -313,13 +485,13 @@ public class Cell : MonoBehaviour
         {
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
-                if (cellData[x, y] == TileType.EMPTY && cellBlockPointer[x, y].IsDisplay)
+                if (cellData[x, y] == TileType.EMPTY && cellBlockPointer[x, y] != null)
                 {
-                    cellBlockPointer[x, y].ProcessMatch();
-                    availableBlocks.Enqueue(cellBlockPointer[x, y]);
-                } else if (!cellBlockPointer[x, y].isActiveAndEnabled)
-                {
-                    cellBlockPointer[x, y] = null;
+                    if (!cellBlockPointer[x, y].HasProcessed)
+                    {
+                        cellBlockPointer[x, y].ProcessMatch();
+                    }
+                    // availableBlocks.Enqueue(cellBlockPointer[x, y]);
                 }
             }
         }

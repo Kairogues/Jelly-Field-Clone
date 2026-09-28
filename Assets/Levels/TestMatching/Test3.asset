@@ -23,17 +23,17 @@ MonoBehaviour:
           - column: 0000000000000000i
       - innerTile:
           grid:
-          - column: 0000000000000000i
-          - column: 0100000000000000i
+          - column: 0200000002000000i
+          - column: 0100000003000000i
     - column:
       - innerTile:
           grid:
-          - column: 0000000001000000i
-          - column: 0000000001000000i
+          - column: 0400000001000000i
+          - column: 0400000001000000i
       - innerTile:
           grid:
-          - column: 0100000000000000i
-          - column: 0100000000000000i
+          - column: 0100000004000000i
+          - column: 0100000004000000i
     - column:
       - innerTile:
           grid:

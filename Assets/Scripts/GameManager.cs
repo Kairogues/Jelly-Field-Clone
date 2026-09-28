@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         goalTracker.SetupGoal(levels[currentLevel].goals);
-        gameLogic.SetLevelLayout(levels[currentLevel].levelLayout);
+        gameLogic.CellDataGrid = levels[currentLevel].levelLayout;
         game.StartNewGame();
     }
 

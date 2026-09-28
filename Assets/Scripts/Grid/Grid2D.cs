@@ -18,10 +18,8 @@ public class GridColumn<T>
 public class Grid2D<T>
 {
 	[SerializeField] GridColumn<T>[] grid;
-
-	int2 size;
-
     public GridColumn<T> this[int x] => grid[x];
+	private int2 size;
 
 	public T this[int x, int y]
 	{
@@ -41,7 +39,7 @@ public class Grid2D<T>
 
 
 
-	public Grid2D (int2 size)
+	public Grid2D(int2 size)
 	{
         Resize(size);
 	}
@@ -62,7 +60,7 @@ public class Grid2D<T>
     }
 
 
-	public bool AreInRangeCoordinates (int2 c)
+	public bool AreInGridRange(int2 c)
     {
 		if (0 <= c.x && c.x < size.x && 0 <= c.y && c.y < size.y)
         {

@@ -25,7 +25,7 @@ public class Game : MonoBehaviour
         idleDuration = 2f;
         gameLogic.SetupNewGame();
 
-        Grid2D<CellData> cellDataGridPrototype = gameLogic.LevelLayout.cellDataGrid;
+        Grid2D<CellData> cellDataGridPrototype = gameLogic.CellDataGrid.cellDataGrid;
 
         cellGrid = new Grid2D<Cell>(new(cellDataGridPrototype.SizeX, cellDataGridPrototype.SizeY));
 
@@ -62,7 +62,7 @@ public class Game : MonoBehaviour
         {
             FillGridAfterMatches();
             // Set idleDuration
-            idleDuration = 12.5f;
+            idleDuration = 0.5f;
             return;
         }
 
@@ -81,7 +81,7 @@ public class Game : MonoBehaviour
             acceptInputCell = false;
             ProcessMatches();
             // Set idleDuration
-            idleDuration = 10.5f;
+            idleDuration = 0.5f;
             return;
         }
 

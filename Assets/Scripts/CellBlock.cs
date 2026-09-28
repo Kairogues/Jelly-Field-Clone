@@ -5,7 +5,7 @@ public class CellBlock : MonoBehaviour
 {
     public static float growTime = 1.0f;
     [SerializeField] private MeshRenderer visual;
-    private bool isDisplay = true;
+    private bool hasProcessed = false;
     private TileType tileType;
 
     public TileType TileType
@@ -13,17 +13,16 @@ public class CellBlock : MonoBehaviour
         get => tileType;
         set => tileType = value;
     }
-    public bool IsDisplay
+    public bool HasProcessed
     {
-        get => isDisplay;
-        set => isDisplay = value;
+        get => hasProcessed;
+        set => hasProcessed = value;
     }
 
 
     private void Awake()
     {
-        visual.gameObject.SetActive(false);
-        isDisplay = false;
+        hasProcessed = false;
     }
 
 
@@ -33,7 +32,7 @@ public class CellBlock : MonoBehaviour
         visual.transform.localPosition += visualPositionOffset;
         transform.localScale = scale;
         this.tileType = tileType;
-        isDisplay = true;
+        hasProcessed = false;
         if (MaterialLoader.Instance.materialDictionary.TryGetValue(this.tileType, out Material material))
         {
             visual.sharedMaterial = material;
@@ -49,9 +48,8 @@ public class CellBlock : MonoBehaviour
     public void ProcessMatch()
     {
         // Play animation
-        visual.gameObject.SetActive(false);
-        transform.localPosition = Vector3.zero;
-        isDisplay = false;
+        hasProcessed = true;
+        Destroy(this);
     }
 
 
