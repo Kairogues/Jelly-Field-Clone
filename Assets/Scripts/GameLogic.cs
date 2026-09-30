@@ -263,7 +263,6 @@ public class GameLogic : MonoBehaviour
     }
     #endregion
 
-    bool hasDropped = false;
     public void UpdateTileTypeGrid(CellUpdateData cellUpdateData)
     {
         int2 cellCoord = cellUpdateData.cellCoord;
@@ -276,12 +275,9 @@ public class GameLogic : MonoBehaviour
                 int2 localTileCoord = new(x, y);
                 int2 globalTileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, localTileCoord);
                 tileTypeGrid[globalTileCoord] = cellData[localTileCoord];
-                Debug.Log("Success at cell (" + cellCoord.x + "," + cellCoord.y + "), pos " + x + ":" + y + " " + cellData[localTileCoord]);
+                //Debug.Log("Success at cell (" + cellCoord.x + "," + cellCoord.y + "), pos " + x + ":" + y + " " + cellData[localTileCoord]);
             }
         }
-
-
-        hasDropped = true;
     }
 
 

@@ -1,6 +1,7 @@
 public enum TileType
 {
 	EMPTY,
+	RED,
 	PINK,
 	ORANGE,
 	YELLOW,

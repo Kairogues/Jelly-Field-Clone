@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Purple
-    second: {fileID: 2100000, guid: 3f405db641a78284f86c5220a5492fb1, type: 2}
+    second: {fileID: 2100000, guid: 18241b732ff141244a3ad8eaf7ffa11f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

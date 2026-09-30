@@ -151,7 +151,11 @@ public class CellBlock : MonoBehaviour
                 visual.gameObject.transform.localPosition.z - signY * amount
             );
 
-        transform.localScale *= 2f;
+        transform.localScale = new Vector3(
+                transform.localScale.x * 2f,
+                transform.localScale.y,
+                transform.localScale.z * 2f
+            );
 
         transform.position = new Vector3(
                 transform.position.x - signX * amount,

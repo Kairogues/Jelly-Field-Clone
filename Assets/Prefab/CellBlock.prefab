@@ -97,7 +97,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: f017707baf274bc459fc0415bcab0a37, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 174f371f654b4674885ff91156a655b1, type: 2}
+      objectReference: {fileID: 2100000, guid: 18241b732ff141244a3ad8eaf7ffa11f, type: 2}
     - target: {fileID: 919132149155446097, guid: f017707baf274bc459fc0415bcab0a37, type: 3}
       propertyPath: m_Name
       value: JellyBlock

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CellSpawner : MonoBehaviour
+public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private List<GameObject> tileBlocks = new List<GameObject>(4);
     [SerializeField] private GameObject floor;
@@ -234,7 +235,7 @@ public class CellSpawner : MonoBehaviour
         }
     }
 
-
+    /*
     private void OnMouseDown()
     {
         MouseDragManager.Instance.PickUpCell(this);
@@ -243,6 +244,19 @@ public class CellSpawner : MonoBehaviour
 
     private void OnMouseUp()
     {
+        MouseDragManager.Instance.DropOverCell();
+    }
+    */
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("Mouse Down");
+        MouseDragManager.Instance.PickUpCell(this);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        Debug.Log("Mouse Up");
         MouseDragManager.Instance.DropOverCell();
     }
 }

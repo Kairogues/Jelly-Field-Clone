@@ -107,36 +107,7 @@ public class Game : MonoBehaviour
 
         foreach (int2 cellCoord in gameLogic.CellToFill)
         {
-            if (cellCoord.x == 1 && cellCoord.y == 0)
-            {
-                Debug.Log("This is it");
-                Debug.Log("NEW");
-                for (int x = 0; x < CellData.CELL_SIZE; x++)
-                {
-                    for (int y = 0; y < CellData.CELL_SIZE; y++)
-                    {
-                        int2 globalTileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, new(x, y));
-                        Debug.Log("[" + x + "," + y + "]: " + gameLogic.TileTypeGrid[globalTileCoord]);
-                    }
-                }
-
-                Debug.Log("OLD");
-                for (int x = 0; x < CellData.CELL_SIZE; x++)
-                {
-                    for (int y = 0; y < CellData.CELL_SIZE; y++)
-                    {
-                        Debug.Log("[" + x + "," + y + "]: " +  cellGrid[cellCoord].CellData[x, y]);
-                    }
-                }
-
-                cellGrid[cellCoord].FillEmpty(gameLogic.GetCellData(cellCoord), true);
-                continue;
-            } else
-            {
-                cellGrid[cellCoord].FillEmpty(gameLogic.GetCellData(cellCoord), false);
-            }
-            
-            
+            cellGrid[cellCoord].FillEmpty(gameLogic.GetCellData(cellCoord));   
         }
     }
 

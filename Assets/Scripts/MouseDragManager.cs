@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseDragManager : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class MouseDragManager : MonoBehaviour
     private CellSpawner holdingCellOrigin;
     private GameObject holdingCell;
     private Cell currentHoveringCell;
+
+
 
     private void Awake()
     {
@@ -19,11 +22,12 @@ public class MouseDragManager : MonoBehaviour
         Instance = this;
     }
 
+
     public void PickUpCell(CellSpawner cellSpawner)
     {
         holdingCellOrigin = cellSpawner;
         holdingCell = holdingCellOrigin.Cell;
-        Debug.Log("Picking up...");
+        //Debug.Log("Picking up...");
     }
 
 
@@ -34,16 +38,25 @@ public class MouseDragManager : MonoBehaviour
     }
 
 
+    public void StopHoveringCell(Cell cell)
+    {
+        if (currentHoveringCell == cell)
+        {
+            currentHoveringCell = null;
+        }
+    }
+
+
     public void DropOverCell()
     {
         if (currentHoveringCell && holdingCellOrigin)
         {
-            Debug.Log("Dropped success");
+            //Debug.Log("Dropped success");
             currentHoveringCell.DropCellSuccess();
             currentHoveringCell.Setup(holdingCellOrigin.CellData);
         }
 
-        Debug.Log("No cell to drop");
+        //Debug.Log("No cell to drop");
         holdingCellOrigin = null;
         holdingCell = null;
         currentHoveringCell = null;
