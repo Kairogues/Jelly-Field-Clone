@@ -19,7 +19,7 @@ public class GameLogic : MonoBehaviour
     public int TileGridHeight => tileTypeGrid.SizeY;
     public int2 TileGridSize => new(TileGridWidth, TileGridHeight);
     public int CellGridWidth => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridWidth).x;
-    public int CellGridHeight => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridWidth).y;
+    public int CellGridHeight => CoordinateConverter.GlobalTileCoordToCellCoord(TileGridHeight).y;
     public int2 CellGridSize => new(CellGridWidth, CellGridHeight);
     public Grid2D<TileType> TileTypeGrid => tileTypeGrid;
     public CellDataGrid CellDataGrid
@@ -73,7 +73,7 @@ public class GameLogic : MonoBehaviour
         }
 
         ConstructMatchGroup();
-        PrintMatchGroups();
+        //PrintMatchGroups();
     }
 
 
@@ -274,7 +274,8 @@ public class GameLogic : MonoBehaviour
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
                 int2 localTileCoord = new(x, y);
-                tileTypeGrid[cellCoord + localTileCoord] = cellData[localTileCoord];
+                int2 globalTileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, localTileCoord);
+                tileTypeGrid[globalTileCoord] = cellData[localTileCoord];
                 Debug.Log("Success at cell (" + cellCoord.x + "," + cellCoord.y + "), pos " + x + ":" + y + " " + cellData[localTileCoord]);
             }
         }
@@ -328,7 +329,7 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    private void PrintAllElement(bool inTileCoord)
+    public void PrintAllElement(bool inTileCoord)
     {
         if (inTileCoord)
         {
@@ -343,22 +344,26 @@ public class GameLogic : MonoBehaviour
             }
         } else
         {
-            for (int x = 0; x < CellGridWidth; x += CellData.CELL_SIZE)
+            for (int x = 0; x < CellGridWidth; x++)
             {
-                for (int y = 0; y < CellGridHeight; y += CellData.CELL_SIZE)
+                for (int y = 0; y < CellGridHeight; y++)
                 {
-                    Debug.Log("Cell (" + (x / CellData.CELL_SIZE) + "," + (y / CellData.CELL_SIZE) + "):");
-                    Debug.Log("[0,0]: " + TileTypeGrid[x, y]);
-                    Debug.Log("[0,1]: " + TileTypeGrid[x, y + 1]);
-                    Debug.Log("[1,0]: " + TileTypeGrid[x + 1, y]);
-                    Debug.Log("[1,1]: " + TileTypeGrid[x + 1, y + 1]);
+                    Debug.Log("Cell (" + x + "," + y + "):");
+                    for (int i = 0; i < CellData.CELL_SIZE; i++)
+                    {
+                        for (int j = 0; j < CellData.CELL_SIZE; j++)
+                        {
+                            int2 coord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(new(x, y), new(i, j));
+                            Debug.Log("[" + i + "," + j + "]: " + TileTypeGrid[coord]);
+                        }
+                    }
                 }
             }
         }
     }
 
 
-    private void PrintMatchCellGraph()
+    public void PrintMatchCellGraph()
     {
         Debug.Log("MATCH CELL GRAPH");
         foreach (KeyValuePair<TileType, MatchCellGraph> kvp in matchCellGraph)
@@ -368,12 +373,30 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    private void PrintMatchGroups()
+    public void PrintMatchGroups()
     {
         Debug.Log("MATCH GROUPS");
         for (int i = 0; i < matchGroups.Count; i++)
         {
             Debug.Log(matchGroups[i]);
+        }
+    }
+
+
+    public void PrintCellToFill()
+    {
+        Debug.Log("CELL TO FILL");
+        foreach (int2 cellCoord in cellToFill)
+        {
+            Debug.Log("(" + cellCoord.x + "," + cellCoord.y + "): ");
+            for (int x = 0; x < CellData.CELL_SIZE; x++)
+            {
+                for (int y = 0; y < CellData.CELL_SIZE; y++)
+                {
+                    int2 globalTileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, new(x, y));
+                    Debug.Log("[" + x + "," + y + "]: " + TileTypeGrid[globalTileCoord]);
+                }
+            }
         }
     }
     #endregion

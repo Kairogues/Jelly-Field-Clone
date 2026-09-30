@@ -35,6 +35,10 @@ public class Cell : MonoBehaviour
     {
         get => isNoneTile;
     }
+    public bool IsEmptyTile
+    {
+        get => isEmptyTile;
+    }
 
 
 
@@ -485,9 +489,9 @@ public class Cell : MonoBehaviour
         {
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
-                if (cellData[x, y] == TileType.EMPTY && cellBlockPointer[x, y] != null)
+                if (cellData[x, y] == TileType.EMPTY && !cellBlockPointer[x, y].HasProcessed)
                 {
-                    if (!cellBlockPointer[x, y].HasProcessed)
+                    if (cellBlockPointer[x, y] != null)
                     {
                         cellBlockPointer[x, y].ProcessMatch();
                     }
@@ -498,9 +502,9 @@ public class Cell : MonoBehaviour
     }
 
 
-    public void FillEmpty(CellData newCellData)
+    public void FillEmpty(CellData newCellData, bool temp)
     {
-        List<int2> fillTile = new();
+        List<int2> filledTile = new();
         int emptyCount = 0;
         
         for (int x = 0; x < CellData.CELL_SIZE; x++)
@@ -509,10 +513,17 @@ public class Cell : MonoBehaviour
             {
                 if (cellData[x, y] == TileType.EMPTY && newCellData[x, y] != TileType.EMPTY)
                 {
-                    fillTile.Add(new(x, y));
-                } else
+                    filledTile.Add(new(x, y));
+                } else if (cellData[x, y] != TileType.EMPTY && newCellData[x, y] != TileType.EMPTY)
+                {
+                    
+                } 
+                // cellData[x, y] != TileType.EMPTY && newCellData[x, y] == TileType.EMPTY
+                // cellData[x, y] == TileType.EMPTY && newCellData[x, y] == TileType.EMPTY
+                else if (cellData[x, y] == TileType.EMPTY && newCellData[x, y] == TileType.EMPTY)
                 {
                     emptyCount++;
+                    //Debug.Log("Unknown Case");
                 }
             }
         }
@@ -523,43 +534,51 @@ public class Cell : MonoBehaviour
             return;
         }
 
-        if (fillTile.Count == 0)
+        if (filledTile.Count == 0)
         {
             return;
         }
         
 
-        if (fillTile.Count == 1)
+        if (filledTile.Count == 1)
         {
-            if (newCellData[fillTile[0]] == newCellData[1 - fillTile[0].x, fillTile[0].y])
+            if (newCellData[filledTile[0]] == newCellData[1 - filledTile[0].x, filledTile[0].y])
             {
-                FillHorizontal(new(1 - fillTile[0].x, fillTile[0].y));
-            } else if (newCellData[fillTile[0]] == newCellData[fillTile[0].x, 1 - fillTile[0].y])
+                FillHorizontal(new(1 - filledTile[0].x, filledTile[0].y));
+            } else if (newCellData[filledTile[0]] == newCellData[filledTile[0].x, 1 - filledTile[0].y])
             {
-                FillVertical(new(fillTile[0].x, 1 - fillTile[0].y));
+                FillVertical(new(filledTile[0].x, 1 - filledTile[0].y));
             }
             return;
-        } else if (fillTile.Count == 2)
+        } else if (filledTile.Count == 2)
         {
-            if (fillTile[0].x == fillTile[1].x) // Same col
+            if (filledTile[0].x == filledTile[1].x) // Same col
             {
-                if (cellData[fillTile[0]] == cellData[fillTile[1]])
+                if (newCellData[filledTile[0]] == newCellData[filledTile[1]])
                 {
-                    FillHorizontal(new(1 - fillTile[0].x, fillTile[0].y));
+                    FillHorizontal(new(1 - filledTile[0].x, filledTile[0].y));
                 } else
                 {
-                    FillHorizontal(new(1 - fillTile[0].x, fillTile[0].y));
-                    FillHorizontal(new(1 - fillTile[1].x, fillTile[1].y));
+                    FillHorizontal(new(1 - filledTile[0].x, filledTile[0].y));
+                    FillHorizontal(new(1 - filledTile[1].x, filledTile[1].y));
                 }
             } else // Same row
             {
-                if (cellData[fillTile[0]] == cellData[fillTile[1]])
+                if (newCellData[filledTile[0]] == newCellData[filledTile[1]])
                 {
-                    FillVertical(new(fillTile[0].x, 1 - fillTile[0].y));
+                    if (temp)
+                    {
+                        Debug.Log("Did once" + newCellData[filledTile[0]] + " old " + cellData[filledTile[0]]);
+                    }
+                    FillVertical(new(filledTile[0].x, 1 - filledTile[0].y));
                 } else
                 {
-                    FillVertical(new(fillTile[0].x, 1 - fillTile[0].y));
-                    FillVertical(new(fillTile[1].x, 1 - fillTile[1].y));
+                    if (temp)
+                    {
+                        Debug.Log("Did twice");
+                    }
+                    FillVertical(new(filledTile[0].x, 1 - filledTile[0].y));
+                    FillVertical(new(filledTile[1].x, 1 - filledTile[1].y));
                 }
             }
             return;

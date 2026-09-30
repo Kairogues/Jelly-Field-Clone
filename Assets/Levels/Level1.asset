@@ -18,4 +18,4 @@ MonoBehaviour:
     value: 0
   - key: 1
     value: 0
-  levelLayout: {fileID: 11400000, guid: f4afa737b6f97a44487cc3f48b9984cb, type: 2}
+  levelLayout: {fileID: 11400000, guid: f2a2614d0154a7e40b08aff9103eb81e, type: 2}

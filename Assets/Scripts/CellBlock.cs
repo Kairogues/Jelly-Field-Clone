@@ -49,7 +49,7 @@ public class CellBlock : MonoBehaviour
     {
         // Play animation
         hasProcessed = true;
-        Destroy(this);
+        Destroy(gameObject);
     }
 
 

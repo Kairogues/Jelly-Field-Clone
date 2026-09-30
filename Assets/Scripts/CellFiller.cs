@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System;
 using Unity.Mathematics;
+using UnityEngine;
 
 public class CellFiller
 {
@@ -93,11 +95,12 @@ public class CellFiller
         int2 emptyTile = new(-1, -1);
         foreach (int2 localCoord in CellTileCoordinates)
         {
-            int2 globalCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, localCoord);
+            int2 globalTileCoord = CoordinateConverter.CellCoordWithLocalTileCoordToGlobalTileCoord(cellCoord, localCoord);
 
-            if (tileTypeGrid[globalCoord] == TileType.EMPTY)
+            if (tileTypeGrid[globalTileCoord] == TileType.EMPTY)
             {
-                emptyTile = globalCoord;
+                //Debug.Log("Empty at cell " + cellCoord + ", global tile coord " + globalTileCoord);
+                emptyTile = globalTileCoord;
             }
         }
 
