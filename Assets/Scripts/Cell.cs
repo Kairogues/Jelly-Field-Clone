@@ -65,7 +65,10 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         else
         {
             MouseDragManager.Instance.HoverOverCell(this);
-            floorMeshRenderer.sharedMaterial = floorMaterialOnCursorHovering;
+            if (MouseDragManager.Instance.IsHoldingValidCell())
+            {
+                floorMeshRenderer.sharedMaterial = floorMaterialOnCursorHovering;
+            }
         }
     }
 

@@ -9,6 +9,7 @@ public class MouseDragManager : MonoBehaviour
     private GameObject holdingCell;
     private Cell currentHoveringCell;
 
+    private Vector3 holdingCellStartPosition;
 
 
     private void Awake()
@@ -27,7 +28,43 @@ public class MouseDragManager : MonoBehaviour
     {
         holdingCellOrigin = cellSpawner;
         holdingCell = holdingCellOrigin.Cell;
+        holdingCellStartPosition = holdingCell.transform.position;
         //Debug.Log("Picking up...");
+    }
+
+
+    public void DragCell(Vector2 screenPosition)
+    {
+        if (!holdingCell)
+        {
+            return;
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+
+        Plane boardPlane = new Plane(Vector3.up, holdingCellStartPosition);
+
+        if (boardPlane.Raycast(ray, out float distance))
+        {
+            Vector3 worldPosition = ray.GetPoint(distance);
+
+            holdingCell.transform.position = new Vector3(
+                worldPosition.x,
+                holdingCellStartPosition.y,
+                worldPosition.z
+            );
+        }
+    }
+
+
+    public bool IsHoldingValidCell()
+    {
+        if (holdingCell == null)
+        {
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -54,6 +91,11 @@ public class MouseDragManager : MonoBehaviour
             //Debug.Log("Dropped success");
             currentHoveringCell.DropCellSuccess();
             currentHoveringCell.Setup(holdingCellOrigin.CellData);
+            holdingCellOrigin.DropSuccess();
+            Destroy(holdingCell);
+        } else
+        {
+            // Comeback animation
         }
 
         //Debug.Log("No cell to drop");

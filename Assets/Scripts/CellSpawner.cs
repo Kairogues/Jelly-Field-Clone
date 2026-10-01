@@ -1,16 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
-    [SerializeField] private List<GameObject> tileBlocks = new List<GameObject>(4);
-    [SerializeField] private GameObject floor;
-    [SerializeField] private GameObject cell;
-    [SerializeField] private BoxCollider collider;
-    private Queue<GameObject> availableBlocks = new Queue<GameObject>(4);
+    [SerializeField] private CellBlock cellBlockPrefab;
+    [SerializeField] private GameObject cellBlockHolder;
     private CellData cellData;
-
+    private GameObject cell;
 
     public CellData CellData
     {
@@ -20,58 +16,36 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public GameObject Cell
     {
         get => cell;
+        set => cell = value;
     }
 
 
-    
     private void Start()
     {
-        for (int i = 0; i < 4; i++)
-        {
-            availableBlocks.Enqueue(tileBlocks[i]);
-        }
-
-        CellData cellData = new CellData(TileType.PINK, TileType.ORANGE, TileType.YELLOW, TileType.GREEN);
-        SetupCell(cellData);
+        cellData = new CellData(TileType.PINK, TileType.ORANGE, TileType.YELLOW, TileType.GREEN);
+        Setup(cellData);
     }
 
 
-    public void SetupCellBlock(GameObject availableCellBlock, Vector3 positionOffset, Vector3 scale, TileType tileType)
-    {
-        MeshRenderer mesh = availableCellBlock.GetComponentInChildren<MeshRenderer>();
-        availableCellBlock.transform.localPosition = positionOffset;
-        availableCellBlock.transform.localScale = scale;
-        if (MaterialLoader.Instance.materialDictionary.TryGetValue(tileType, out Material material))
-        {
-            mesh.sharedMaterial = material;
-        } else
-        {
-            Debug.LogError("No material for " + tileType +" assigned in the Material Loader!");
-        }
-        
-        availableCellBlock.gameObject.SetActive(true);
-    }
-
-
-    private void SetupCell(CellData cellData)
+    public void Setup(CellData cellData)
     {
         this.cellData = cellData;
-
+        cell = Instantiate(cellBlockHolder, transform);
+        
         if (cellData[new(0, 0)] == TileType.NONE || cellData[new(0, 0)] == TileType.EMPTY)
         {
-            Debug.LogError("Spawned a NONE or EMPTY tile!");
+            Debug.LogError("The spawned Cell is either EMPTY or NONE cell");
 
             return;
         }
-
 
         // HARD CODE INCOMING
         // 1 2 3
         if (cellData[new(0, 0)] == cellData[new(0, 1)] && cellData[new(0, 1)] == cellData[new(1, 0)])
         {
-            GameObject availableBlock = availableBlocks.Dequeue();
-            SetupCellBlock(
-                availableBlock,
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, cell.transform);
+            cellBlockA.Setup(
+                Vector3.zero, 
                 Vector3.zero, 
                 new Vector3(1f, 1f, 1f), 
                 cellData[new(0, 0)]
@@ -80,10 +54,10 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         // 1 2 !3
         else if (cellData[new(0, 0)] == cellData[new(0, 1)] && cellData[new(0, 1)] != cellData[new(1, 0)])
         {
-            GameObject availableBlock = availableBlocks.Dequeue();
-            SetupCellBlock(
-                availableBlock,
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, cell.transform);
+            cellBlockA.Setup(
                 new Vector3(-0.25f, 0f, 0f), 
+                new Vector3(0f, 0f, 0f), 
                 new Vector3(0.5f, 1f, 1f), 
                 cellData[new(0, 0)]
             );
@@ -91,82 +65,87 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // 3 4
             if (cellData[new(1, 0)] == cellData[new(1, 1)])
             {
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
-                    new Vector3(0.25f, 0f, 0f),  
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockB.Setup(
+                    new Vector3(0.25f, 0f, 0f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 1f), 
                     cellData[new(1, 0)]
                 );
+
             }
             // 3 !4
             else if (cellData[new(1, 0)] != cellData[new(1, 1)])
             {
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
-                    new Vector3(0.25f, 0f, -0.25f),  
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockB.Setup(
+                    new Vector3(0.25f, 0f, -0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 0)]
                 );
 
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockC = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockC.Setup(
                     new Vector3(0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 1)]
                 );
+
             }
         }
         // 1 !2 3
         else if (cellData[new(0, 0)] != cellData[new(0, 1)] && cellData[new(0, 0)] == cellData[new(1, 0)])
         {
-            GameObject availableBlock = availableBlocks.Dequeue();
-            SetupCellBlock(
-                availableBlock,
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, cell.transform);
+            cellBlockA.Setup(
                 new Vector3(0f, 0f, -0.25f), 
+                new Vector3(0f, 0f, 0f), 
                 new Vector3(1f, 1f, 0.5f), 
                 cellData[new(0, 0)]
             );
+
             // 2 4
             if (cellData[new(0, 1)] == cellData[new(1, 1)])
             {
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockB.Setup(
                     new Vector3(0f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(1f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
+
             }
             // 2 !4
             else if (cellData[new(0, 1)] != cellData[new(1, 1)])
             {
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockB.Setup(
                     new Vector3(-0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
 
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockC = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockC.Setup(
                     new Vector3(0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 1)]
                 );
+
             }
         }
         // 1 !2 !3
         else if (cellData[new(0, 0)] != cellData[new(0, 1)] && cellData[new(0, 0)] != cellData[new(1, 0)])
         {
-            GameObject availableBlock = availableBlocks.Dequeue();
-            SetupCellBlock(
-                availableBlock,
+            CellBlock cellBlockA = Instantiate(cellBlockPrefab, cell.transform);
+            cellBlockA.Setup(
                 new Vector3(-0.25f, 0f, -0.250f), 
+                new Vector3(0f, 0f, 0f), 
                 new Vector3(0.5f, 1f, 0.5f), 
                 cellData[new(0, 0)]
             );
@@ -174,29 +153,30 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // 2 4
             if (cellData[new(0, 1)] == cellData[new(1, 1)])
             {
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockB.Setup(
                     new Vector3(0f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(1f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
 
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockC = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockC.Setup(
                     new Vector3(0.25f, 0f, -0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(1, 0)]
                 );
+
             }
             // 2 !4
             else if (cellData[new(0, 1)] != cellData[new(1, 1)])
             {
-                availableBlock = availableBlocks.Dequeue();
-                SetupCellBlock(
-                    availableBlock,
+                CellBlock cellBlockB = Instantiate(cellBlockPrefab, cell.transform);
+                cellBlockB.Setup(
                     new Vector3(-0.25f, 0f, 0.25f), 
+                    new Vector3(0f, 0f, 0f), 
                     new Vector3(0.5f, 1f, 0.5f), 
                     cellData[new(0, 1)]
                 );
@@ -204,59 +184,67 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 // 3 4
                 if (cellData[new(1, 0)] == cellData[new(1, 1)])
                 {
-                    availableBlock = availableBlocks.Dequeue();
-                    SetupCellBlock(
-                        availableBlock,
+                    CellBlock cellBlockC = Instantiate(cellBlockPrefab, cell.transform);
+                    cellBlockC.Setup(
                         new Vector3(0.25f, 0f, 0f), 
+                        new Vector3(0f, 0f, 0f), 
                         new Vector3(0.5f, 1f, 1f), 
                         cellData[new(1, 0)]
                     );
+
                 }
                 // 3 !4
                 else if (cellData[new(1, 0)] != cellData[new(1, 1)])
                 {
-                    availableBlock = availableBlocks.Dequeue();
-                    SetupCellBlock(
-                        availableBlock,
+                    CellBlock cellBlockC = Instantiate(cellBlockPrefab, cell.transform);
+                    cellBlockC.Setup(
                         new Vector3(0.25f, 0f, -0.25f), 
+                        new Vector3(0f, 0f, 0f), 
                         new Vector3(0.5f, 1f, 0.5f), 
                         cellData[new(1, 0)]
                     );
 
-                    availableBlock = availableBlocks.Dequeue();
-                    SetupCellBlock(
-                        availableBlock,
+                    CellBlock cellBlockD = Instantiate(cellBlockPrefab, cell.transform);
+                    cellBlockD.Setup(
                         new Vector3(0.25f, 0f, 0.25f), 
+                        new Vector3(0f, 0f, 0f), 
                         new Vector3(0.5f, 1f, 0.5f), 
                         cellData[new(1, 1)]
                     );
+
                 }
             }
         }
+        
     }
-
-    /*
-    private void OnMouseDown()
-    {
-        MouseDragManager.Instance.PickUpCell(this);
-    }
-
-
-    private void OnMouseUp()
-    {
-        MouseDragManager.Instance.DropOverCell();
-    }
-    */
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Mouse Down");
+        //Debug.Log("Mouse Down");
+        if (cellData == null)
+        {
+            Debug.Log("Nothing to pickup");
+            return;
+        }
         MouseDragManager.Instance.PickUpCell(this);
     }
 
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        MouseDragManager.Instance.DragCell(eventData.position);
+    }
+
+
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("Mouse Up");
+        //Debug.Log("Mouse Up");
         MouseDragManager.Instance.DropOverCell();
+    }
+
+
+    public void DropSuccess()
+    {
+        cellData = null;
     }
 }

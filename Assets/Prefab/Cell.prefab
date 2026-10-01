@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3189893983446245052}
   - component: {fileID: 5207521122011265716}
-  - component: {fileID: 5217762761635308209}
   - component: {fileID: 9049685885856810893}
   m_Layer: 0
   m_Name: Cell
@@ -48,28 +47,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cell
   cellBlockPrefab: {fileID: 1309672022476695884, guid: 0ef1df546a2435144b6066eca773cd88, type: 3}
-  tileBlocks:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   floorMeshRenderer: {fileID: 5831524975916672944}
   collider: {fileID: 9049685885856810893}
   floorMaterialNormal: {fileID: 2100000, guid: 41507f192d1c28149beaf14f4124fac8, type: 2}
   floorMaterialOnCursorHovering: {fileID: 2100000, guid: 0fb417ff792ffc94c9becb5696808016, type: 2}
   floorMaterialNoneTile: {fileID: 2100000, guid: c5ca4d5114ea1b141836ce2f779c7da9, type: 2}
---- !u!114 &5217762761635308209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3698399589984708592}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8a0c95cc1b84144eb5d787af7ea5f97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PooledObject
 --- !u!65 &9049685885856810893
 BoxCollider:
   m_ObjectHideFlags: 0
