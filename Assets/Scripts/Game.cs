@@ -6,10 +6,6 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField] private bool isTesting;
-
-
-
     [SerializeField] private GameLogic gameLogic;
     [SerializeField] private Cell cellPrefab;
     private Grid2D<Cell> cellGrid;
@@ -43,12 +39,6 @@ public class Game : MonoBehaviour
 
     public void Process()
     {
-        if (isTesting)
-        {
-            gameLogic.Test();
-            return;
-        }
-
         if (idleDuration > 0f)
         {
             idleDuration -= Time.deltaTime;
@@ -62,7 +52,6 @@ public class Game : MonoBehaviour
         {
             FillGridAfterMatches();
             // Set idleDuration
-            idleDuration = 0.5f;
             return;
         }
 
@@ -81,7 +70,6 @@ public class Game : MonoBehaviour
             acceptInputCell = false;
             ProcessMatches();
             // Set idleDuration
-            idleDuration = 0.5f;
             return;
         }
 
@@ -92,6 +80,8 @@ public class Game : MonoBehaviour
     private void ProcessMatches()
     {
         gameLogic.ProcessMatches();
+
+        idleDuration = Mathf.Max(CellBlock.POP_DURATION, idleDuration);
 
         foreach (int2 cell in gameLogic.CellToFill)
         {

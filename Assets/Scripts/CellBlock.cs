@@ -11,10 +11,13 @@ public enum GrowType
 
 public class CellBlock : MonoBehaviour
 {
-    public static float growTime = 0.5f;
-    public static float popTime = 0.5f;
+    public static float GROW_DURATION = 0.5f; // Constant
+    public static float POP_DURATION = 0.5f; // Constant
     [SerializeField] private MeshRenderer visual;
     private bool isProcessing = false;
+    private float growProgress = -1f;
+    private float popProgress = -1f;
+    private Vector3 currentScale;
     private TileType tileType;
 
     public TileType TileType
@@ -37,7 +40,59 @@ public class CellBlock : MonoBehaviour
 
     private void Update()
     {
-        
+        if (popProgress >= 0f)
+        {
+            popProgress += Time.deltaTime;
+
+            float expandDuration = POP_DURATION * 0.40f; // 65% Expanding
+            float pauseDuration  = POP_DURATION * 0.20f; // 25% Holding
+            float delayDuration  = POP_DURATION * 0.40f; // 10% Idling
+
+            if (popProgress <= expandDuration)
+            {
+                float t = popProgress / expandDuration;
+                transform.localScale = currentScale * Mathf.Lerp(1f, 1.15f, t);
+            }
+            else if (popProgress <= expandDuration + pauseDuration)
+            {
+                transform.localScale = currentScale * 1.15f;
+            }
+            else if (popProgress <= expandDuration + pauseDuration + delayDuration)
+            {
+                if (visual.enabled)
+                {
+                    visual.enabled = false;
+                }
+            }
+            else
+            {
+                ProcessMatch();
+                return;
+            }
+        }
+
+        if (growProgress >= 0f)
+        {
+            
+        }
+    }
+
+
+    public float StartGrowing()
+    {
+        growProgress = 0;
+
+        return GROW_DURATION;
+    }
+
+
+    public float StartPopping()
+    {
+        popProgress = 0;
+        isProcessing = true;
+        currentScale = transform.localScale;
+
+        return POP_DURATION;
     }
 
 
@@ -62,11 +117,8 @@ public class CellBlock : MonoBehaviour
 
     public void ProcessMatch()
     {
-        // Play animation
-        isProcessing = true;
         Destroy(gameObject);
     }
-
 
 
     public void GrowBlock(GrowType growType, int2 start)
@@ -87,7 +139,6 @@ public class CellBlock : MonoBehaviour
                 break;
         }
     }
-
 
 
     public void GrowHorizontal(int2 start)

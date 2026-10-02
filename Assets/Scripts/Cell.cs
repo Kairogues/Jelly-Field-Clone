@@ -336,11 +336,19 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
+                Debug.Log("Cell " + coord);
+                Debug.Log("Tile " + x + ":" + y);
+
+                if (cellBlockPointer[x, y] == null)
+                {
+                    continue;
+                }
+
                 if (cellData[x, y] == TileType.EMPTY && !cellBlockPointer[x, y].IsProcessing)
                 {
                     if (cellBlockPointer[x, y] != null)
                     {
-                        cellBlockPointer[x, y].ProcessMatch();
+                        cellBlockPointer[x, y].StartPopping();
                     }
                 }
             }
