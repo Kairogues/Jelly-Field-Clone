@@ -22,8 +22,12 @@ public class AudioManager : MonoBehaviour
     public void PlaySoundFX(AudioClip clip, Transform playPosition, float volume) 
     {
         AudioSource audioSource = Instantiate(audioSourcePrototype, playPosition.position, Quaternion.identity);
+        float randomVolumeOffset = Random.Range(-0.05f, 0.05f);
+        float randomPitchOffet = Random.Range(-0.2f, 0.2f);
         audioSource.clip = clip;
-        audioSource.volume = volume;
+        audioSource.pitch += randomPitchOffet;
+        audioSource.volume = volume + randomVolumeOffset;
+
         audioSource.Play();
 
         Destroy(audioSource.gameObject, audioSource.clip.length);

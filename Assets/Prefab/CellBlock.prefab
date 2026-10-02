@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CellBlock
   visual: {fileID: 4035956185534500455}
+  popSound: {fileID: 8300000, guid: 6af54ad221e852744831f6ed1d38d081, type: 3}
 --- !u!1001 &3441609270862385891
 PrefabInstance:
   m_ObjectHideFlags: 0

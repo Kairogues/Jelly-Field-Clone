@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Game game;
     [SerializeField] private GameLogic gameLogic;
+    [SerializeField] private GoalTracker goalTracker;
     [SerializeField] private CellGenerator cellGenerator;
     [SerializeField] private List<Level> levels;
-    private GoalTracker goalTracker = new GoalTracker();
     private int currentLevel = 0;
 
     public CellGenerator CellGenerator

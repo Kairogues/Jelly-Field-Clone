@@ -5,6 +5,8 @@ public class MouseDragManager : MonoBehaviour
 {
     public static MouseDragManager Instance;
 
+    [SerializeField] private AudioClip pickupSFX;
+    [SerializeField] private AudioClip dropSFX;
     private CellSpawner holdingCellOrigin;
     private GameObject holdingCell;
     private Cell currentHoveringCell;
@@ -29,6 +31,7 @@ public class MouseDragManager : MonoBehaviour
         holdingCellOrigin = cellSpawner;
         holdingCell = holdingCellOrigin.Cell;
         holdingCellStartPosition = holdingCell.transform.position;
+        AudioManager.Instance.PlaySoundFX(pickupSFX, transform, 1.0f);
         //Debug.Log("Picking up...");
     }
 
@@ -92,10 +95,11 @@ public class MouseDragManager : MonoBehaviour
             currentHoveringCell.DropCellSuccess();
             currentHoveringCell.Setup(holdingCellOrigin.CellData);
             holdingCellOrigin.DropSuccess();
+            AudioManager.Instance.PlaySoundFX(dropSFX, transform, 1.0f);
             Destroy(holdingCell);
         } else
         {
-            // Comeback animation
+            holdingCell.transform.position = holdingCellOrigin.transform.position;
         }
 
         //Debug.Log("No cell to drop");

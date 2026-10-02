@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
-[System.Serializable]
-public class GoalTracker
+public class GoalTracker : MonoBehaviour
 {
     public event Action<TileType, int> ProgressedTask;
     public event Action<TileType> CompletedTask;
     public event Action CompletedGoal;
+    [SerializeField] private AudioClip taskCompletion;
+    [SerializeField] private AudioClip goalReach;
     private Dictionary<TileType, int> goalTracker = new();
     private int currentTaskAmount = 0;
 
@@ -38,10 +40,12 @@ public class GoalTracker
         {
             CompletedTask?.Invoke(tileType);
             currentTaskAmount -= 1;
+            AudioManager.Instance.PlaySoundFX(taskCompletion, transform, 1.0f);
 
             if (currentTaskAmount == 0)
             {
                 CompletedGoal?.Invoke();
+                AudioManager.Instance.PlaySoundFX(goalReach, transform, 1.0f);
             }
         }
     }

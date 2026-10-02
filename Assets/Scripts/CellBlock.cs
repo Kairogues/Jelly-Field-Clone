@@ -14,6 +14,7 @@ public class CellBlock : MonoBehaviour
     public static float GROW_DURATION = 0.5f; // Constant
     public static float POP_DURATION = 0.5f; // Constant
     [SerializeField] private MeshRenderer visual;
+    [SerializeField] private AudioClip popSound;
     private bool isProcessing = false;
     private float growProgress = -1f;
     private Vector3 growStartScale;
@@ -65,6 +66,7 @@ public class CellBlock : MonoBehaviour
             {
                 if (visual.enabled)
                 {
+                    AudioManager.Instance.PlaySoundFX(popSound, transform, 1.0f);
                     visual.enabled = false;
                 }
             }
