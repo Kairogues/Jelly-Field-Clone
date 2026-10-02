@@ -22,7 +22,13 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void Start()
     {
-        cellData = new CellData(TileType.PINK, TileType.ORANGE, TileType.YELLOW, TileType.GREEN);
+        SpawnNewCellData();
+    }
+
+
+    private void SpawnNewCellData()
+    {
+        cellData = GameManager.Instance.CellGenerator.GetRandomCellData();
         Setup(cellData);
     }
 
@@ -246,5 +252,6 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void DropSuccess()
     {
         cellData = null;
+        SpawnNewCellData();
     }
 }

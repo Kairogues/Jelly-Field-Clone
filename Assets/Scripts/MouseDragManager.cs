@@ -50,7 +50,7 @@ public class MouseDragManager : MonoBehaviour
 
             holdingCell.transform.position = new Vector3(
                 worldPosition.x,
-                holdingCellStartPosition.y,
+                holdingCellStartPosition.y + 1f,
                 worldPosition.z
             );
         }

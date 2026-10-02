@@ -1,11 +1,20 @@
 using Unity.Mathematics;
 using UnityEngine;
 
+public enum GrowType
+{
+    HORIZONTAL,
+    VERTICAL,
+    DIAGONAL
+}
+
+
 public class CellBlock : MonoBehaviour
 {
-    public static float growTime = 1.0f;
+    public static float growTime = 0.5f;
+    public static float popTime = 0.5f;
     [SerializeField] private MeshRenderer visual;
-    private bool hasProcessed = false;
+    private bool isProcessing = false;
     private TileType tileType;
 
     public TileType TileType
@@ -13,16 +22,22 @@ public class CellBlock : MonoBehaviour
         get => tileType;
         set => tileType = value;
     }
-    public bool HasProcessed
+    public bool IsProcessing
     {
-        get => hasProcessed;
-        set => hasProcessed = value;
+        get => isProcessing;
+        set => isProcessing = value;
     }
 
 
     private void Awake()
     {
-        hasProcessed = false;
+        isProcessing = false;
+    }
+
+
+    private void Update()
+    {
+        
     }
 
 
@@ -32,7 +47,7 @@ public class CellBlock : MonoBehaviour
         visual.transform.localPosition += visualPositionOffset;
         transform.localScale = scale;
         this.tileType = tileType;
-        hasProcessed = false;
+        isProcessing = false;
         if (MaterialLoader.Instance.materialDictionary.TryGetValue(this.tileType, out Material material))
         {
             visual.sharedMaterial = material;
@@ -48,8 +63,29 @@ public class CellBlock : MonoBehaviour
     public void ProcessMatch()
     {
         // Play animation
-        hasProcessed = true;
+        isProcessing = true;
         Destroy(gameObject);
+    }
+
+
+
+    public void GrowBlock(GrowType growType, int2 start)
+    {
+        switch (growType)
+        {
+            case GrowType.HORIZONTAL:
+                GrowHorizontal(start);
+                break;
+            case GrowType.VERTICAL:
+                GrowVertical(start);
+                break;
+            case GrowType.DIAGONAL:
+                GrowDiagonal(start);
+                break;
+            default:
+                Debug.LogError("GrowType is invalid");
+                break;
+        }
     }
 
 

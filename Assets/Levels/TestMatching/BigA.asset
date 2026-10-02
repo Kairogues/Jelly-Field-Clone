@@ -12,19 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2438bdf4b2295748a5f7c47f997f269, type: 3}
   m_Name: BigA
   m_EditorClassIdentifier: Assembly-CSharp::CellDataGrid
-  width: 7
-  height: 10
+  width: 5
+  height: 8
   cellDataGrid:
     grid:
     - column:
       - innerTile:
           grid:
-          - column: 0800000008000000i
-          - column: 0800000008000000i
+          - column: 0000000000000000i
+          - column: 0000000000000000i
       - innerTile:
           grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+    - column:
       - innerTile:
           grid:
           - column: 0000000000000000i
@@ -90,14 +115,6 @@ MonoBehaviour:
           grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
     - column:
       - innerTile:
           grid:
@@ -131,146 +148,7 @@ MonoBehaviour:
           grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
     - column:
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-    - column:
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-    - column:
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-    - column:
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
       - innerTile:
           grid:
           - column: 0000000000000000i

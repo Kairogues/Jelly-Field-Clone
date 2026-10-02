@@ -4,9 +4,9 @@ using System;
 [System.Serializable]
 public class GoalTracker
 {
-    public static event Action<TileType, int> ProgressedTask;
-    public static event Action<TileType> CompletedTask;
-    public static event Action CompletedGoal;
+    public event Action<TileType, int> ProgressedTask;
+    public event Action<TileType> CompletedTask;
+    public event Action CompletedGoal;
     private Dictionary<TileType, int> goalTracker = new();
     private int currentTaskAmount = 0;
 
@@ -23,14 +23,14 @@ public class GoalTracker
         }
     }
 
-    public bool Contribute(TileType tileType, int amount = 1)
+    public void Contribute(TileType tileType)
     {
         if (!goalTracker.TryGetValue(tileType, out int amountLeft))
         {
-            return false;
+            return;
         }
 
-        goalTracker[tileType] -= amount;
+        goalTracker[tileType] -= 1;
 
         ProgressedTask?.Invoke(tileType, goalTracker[tileType]);
 
@@ -44,7 +44,5 @@ public class GoalTracker
                 CompletedGoal?.Invoke();
             }
         }
-
-        return true;
     }
 }

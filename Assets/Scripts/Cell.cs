@@ -57,7 +57,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse enters " + Coord);
+        //Debug.Log("Mouse enters " + Coord);
         if (!isEmptyTile || isNoneTile)
         {
             MouseDragManager.Instance.HoverOverCell(null);
@@ -74,9 +74,10 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Mouse exits " + Coord);
+        //Debug.Log("Mouse exits " + Coord);
         if (!isNoneTile)
         {
+            MouseDragManager.Instance.StopHoveringCell(this);
             floorMeshRenderer.sharedMaterial = floorMaterialNormal;
         }
     }
@@ -335,7 +336,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
-                if (cellData[x, y] == TileType.EMPTY && !cellBlockPointer[x, y].HasProcessed)
+                if (cellData[x, y] == TileType.EMPTY && !cellBlockPointer[x, y].IsProcessing)
                 {
                     if (cellBlockPointer[x, y] != null)
                     {
@@ -389,10 +390,10 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             if (newCellData[filledTile[0]] == newCellData[1 - filledTile[0].x, filledTile[0].y])
             {
-                FillHorizontal(new(1 - filledTile[0].x, filledTile[0].y));
+                FillBlock(GrowType.HORIZONTAL, new(1 - filledTile[0].x, filledTile[0].y));
             } else if (newCellData[filledTile[0]] == newCellData[filledTile[0].x, 1 - filledTile[0].y])
             {
-                FillVertical(new(filledTile[0].x, 1 - filledTile[0].y));
+                FillBlock(GrowType.VERTICAL, new(filledTile[0].x, 1 - filledTile[0].y));
             }
             return;
         } else if (filledTile.Count == 2)
@@ -404,15 +405,15 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     int2 start = new(1 - filledTile[0].x, filledTile[0].y);
                     if (cellBlockPointer[start] != null)
                     {
-                        FillHorizontal(start);
+                        FillBlock(GrowType.HORIZONTAL, start);
                     } else
                     {
-                        FillHorizontal(new(start.x, 1 - start.y));
+                        FillBlock(GrowType.HORIZONTAL, new(start.x, 1 - start.y));
                     }
                 } else
                 {
-                    FillHorizontal(new(1 - filledTile[0].x, filledTile[0].y));
-                    FillHorizontal(new(1 - filledTile[1].x, filledTile[1].y));
+                    FillBlock(GrowType.HORIZONTAL, new(1 - filledTile[0].x, filledTile[0].y));
+                    FillBlock(GrowType.HORIZONTAL, new(1 - filledTile[1].x, filledTile[1].y));
                 }
             } else // Same row
             {
@@ -421,15 +422,15 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     int2 start = new(filledTile[0].x, 1 - filledTile[0].y);
                     if (cellBlockPointer[start] != null)
                     {
-                        FillVertical(start);
+                        FillBlock(GrowType.VERTICAL, start);
                     } else
                     {
-                        FillVertical(new(1 - start.x, start.y));
+                        FillBlock(GrowType.VERTICAL, new(1 - start.x, start.y));
                     }
                 } else
                 {
-                    FillVertical(new(filledTile[0].x, 1 - filledTile[0].y));
-                    FillVertical(new(filledTile[1].x, 1 - filledTile[1].y));
+                    FillBlock(GrowType.VERTICAL, new(filledTile[0].x, 1 - filledTile[0].y));
+                    FillBlock(GrowType.VERTICAL, new(filledTile[1].x, 1 - filledTile[1].y));
                 }
             }
             return;
@@ -441,7 +442,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 {
                     if (cellData[x, y] != TileType.EMPTY)
                     {
-                        FillDiagonal(new(x, y));
+                        FillBlock(GrowType.DIAGONAL, new(x, y));
                         return;
                     }
                 }
@@ -452,24 +453,8 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
 
-    private void FillDiagonal(int2 start)
+    private void FillBlock(GrowType growType, int2 start)
     {
-        cellBlockPointer[start].GrowDiagonal(start);
-    }
-
-
-    private void FillHorizontal(int2 start)
-    {
-        cellBlockPointer[start].GrowHorizontal(start);
-    }
-
-
-    private void FillVertical(int2 start)
-    {
-        if (cellBlockPointer[start] == null)
-        {
-            Debug.Log("Start is null" + start);
-        }
-        cellBlockPointer[start].GrowVertical(start);
+        cellBlockPointer[start].GrowBlock(growType, start);
     }
 }
