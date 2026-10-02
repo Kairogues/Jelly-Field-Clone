@@ -95,6 +95,8 @@ public class Game : MonoBehaviour
     {
         gameLogic.FillGridAfterMatches();
 
+        idleDuration = Mathf.Max(CellBlock.GROW_DURATION, idleDuration);
+
         foreach (int2 cellCoord in gameLogic.CellToFill)
         {
             cellGrid[cellCoord].FillEmpty(gameLogic.GetCellData(cellCoord));   

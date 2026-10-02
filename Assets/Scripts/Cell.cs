@@ -336,9 +336,6 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             for (int y = 0; y < CellData.CELL_SIZE; y++)
             {
-                Debug.Log("Cell " + coord);
-                Debug.Log("Tile " + x + ":" + y);
-
                 if (cellBlockPointer[x, y] == null)
                 {
                     continue;

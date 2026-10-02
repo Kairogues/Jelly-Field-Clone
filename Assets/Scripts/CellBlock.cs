@@ -16,6 +16,10 @@ public class CellBlock : MonoBehaviour
     [SerializeField] private MeshRenderer visual;
     private bool isProcessing = false;
     private float growProgress = -1f;
+    private Vector3 growStartScale;
+    private Vector3 growTargetScale;
+    private Vector3 growTargetTransform;
+    private Vector3 growTargetVisualTransform;
     private float popProgress = -1f;
     private Vector3 currentScale;
     private TileType tileType;
@@ -44,9 +48,9 @@ public class CellBlock : MonoBehaviour
         {
             popProgress += Time.deltaTime;
 
-            float expandDuration = POP_DURATION * 0.40f; // 65% Expanding
-            float pauseDuration  = POP_DURATION * 0.20f; // 25% Holding
-            float delayDuration  = POP_DURATION * 0.40f; // 10% Idling
+            float expandDuration = POP_DURATION * 0.20f; // 20% Expanding
+            float pauseDuration  = POP_DURATION * 0.40f; // 40% Holding
+            float delayDuration  = POP_DURATION * 0.40f; // 40% Idling
 
             if (popProgress <= expandDuration)
             {
@@ -73,26 +77,43 @@ public class CellBlock : MonoBehaviour
 
         if (growProgress >= 0f)
         {
-            
+            growProgress += Time.deltaTime;
+
+            float growDuration = GROW_DURATION * 0.50f; // 50% Growing
+            float delayDuration  = GROW_DURATION * 0.50f; // 50% Idling
+
+            float t = Mathf.Clamp01(growProgress / growDuration);
+
+            if (growProgress <= growDuration)
+            {
+                transform.localScale = Vector3.Lerp(growStartScale, growTargetScale, t);
+            } else
+            {
+                // Doing nothing
+            }
+
+            if (growProgress >= GROW_DURATION)
+            {
+                transform.position = growTargetTransform;
+                visual.gameObject.transform.localPosition = growTargetVisualTransform;
+                transform.localScale = growTargetScale;
+                growProgress = -1f;
+            }
         }
     }
 
 
-    public float StartGrowing()
+    public void StartGrowing()
     {
         growProgress = 0;
-
-        return GROW_DURATION;
     }
 
 
-    public float StartPopping()
+    public void StartPopping()
     {
         popProgress = 0;
         isProcessing = true;
         currentScale = transform.localScale;
-
-        return POP_DURATION;
     }
 
 
@@ -123,6 +144,8 @@ public class CellBlock : MonoBehaviour
 
     public void GrowBlock(GrowType growType, int2 start)
     {
+        growStartScale = transform.localScale;
+
         switch (growType)
         {
             case GrowType.HORIZONTAL:
@@ -138,6 +161,10 @@ public class CellBlock : MonoBehaviour
                 Debug.LogError("GrowType is invalid");
                 break;
         }
+
+        growTargetScale = transform.localScale;
+        transform.localScale = growStartScale;
+        StartGrowing();
     }
 
 
@@ -167,13 +194,13 @@ public class CellBlock : MonoBehaviour
                 transform.localScale.z
             );
         
-        transform.position = new Vector3(
+        growTargetTransform = new Vector3(
                 transform.position.x - signX * amount,
                 transform.position.y,
                 transform.position.z
             );
 
-        visual.gameObject.transform.localPosition = new Vector3(
+        growTargetVisualTransform = new Vector3(
                 visual.gameObject.transform.localPosition.x + signX * amount,
                 visual.gameObject.transform.localPosition.y,
                 visual.gameObject.transform.localPosition.z
@@ -206,13 +233,13 @@ public class CellBlock : MonoBehaviour
                 transform.localScale.z * 2f
             );
 
-        transform.position = new Vector3(
+        growTargetTransform = new Vector3(
                 transform.position.x,
                 transform.position.y,
                 transform.position.z - signX * amount
             );
 
-        visual.gameObject.transform.localPosition = new Vector3(
+        growTargetVisualTransform = new Vector3(
                 visual.gameObject.transform.localPosition.x,
                 visual.gameObject.transform.localPosition.y,
                 visual.gameObject.transform.localPosition.z + signX * amount
@@ -243,14 +270,14 @@ public class CellBlock : MonoBehaviour
                 transform.localScale.y,
                 transform.localScale.z * 2f
             );
-
-        transform.position = new Vector3(
+        
+        growTargetTransform = new Vector3(
                 transform.position.x - signX * amount,
                 transform.position.y,
                 transform.position.z - signY * amount
             );
-
-        visual.gameObject.transform.localPosition = new Vector3(
+        
+        growTargetVisualTransform = new Vector3(
                 visual.gameObject.transform.localPosition.x + signX * amount,
                 visual.gameObject.transform.localPosition.y,
                 visual.gameObject.transform.localPosition.z + signY * amount
