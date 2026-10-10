@@ -3,6 +3,9 @@ using UnityEngine.EventSystems;
 
 public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
+    public static float Z_LEVEL = -4.5f; // CONSTANT
+    public static float X_LEFT = -2.0f;
+    public static float X_RIGHT = 2.0f;
     [SerializeField] private CellBlock cellBlockPrefab;
     [SerializeField] private GameObject cellBlockHolder;
     private CellData cellData;
@@ -23,6 +26,15 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void Start()
     {
         SpawnNewCellData();
+    }
+
+
+    private void Update()
+    {
+        if (cellData == null)
+        {
+            SpawnNewCellData();
+        }
     }
 
 
@@ -252,6 +264,5 @@ public class CellSpawner : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void DropSuccess()
     {
         cellData = null;
-        SpawnNewCellData();
     }
 }

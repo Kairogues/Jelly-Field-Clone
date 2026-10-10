@@ -23,7 +23,7 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource audioSource = Instantiate(audioSourcePrototype, playPosition.position, Quaternion.identity);
         float randomVolumeOffset = Random.Range(-0.05f, 0.05f);
-        float randomPitchOffet = Random.Range(-0.2f, 0.2f);
+        float randomPitchOffet = Random.Range(-0.05f, 0.05f);
         audioSource.clip = clip;
         audioSource.pitch += randomPitchOffet;
         audioSource.volume = volume + randomVolumeOffset;

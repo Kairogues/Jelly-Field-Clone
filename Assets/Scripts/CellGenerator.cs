@@ -2,17 +2,23 @@ using UnityEngine;
 
 public class CellGenerator : MonoBehaviour
 {
-    private const int ONE_BIG_CHANCE = 20;
-    private const int TWO_BAR_CHANCE = 30;
-    private const int ONE_BAR_CHANCE = 30;
-    private const int FOR_DIFFERENT_CHANCE = 20;
-    private System.Random random;
+    private int giantChance = 20;
+    private int twoBarChance = 30;
+    private int oneBarChance = 30;
+    private int fourDifferentChance = 20;
+    private System.Random randomGen;
 
+
+
+    private void Awake()
+    {
+        SetSeed(System.Environment.TickCount);
+    }
 
 
     public void SetSeed(int seed)
     {
-        random = new System.Random(seed);
+        randomGen = new System.Random(seed);
     }
 
 
@@ -53,26 +59,26 @@ public class CellGenerator : MonoBehaviour
 
     private int PickCellLayout()
     {
-        int accumulation = ONE_BIG_CHANCE;
-        int randomNum = random.Next(0, 100);
+        int accumulation = giantChance;
+        int randomGenNum = randomGen.Next(0, 100);
 
-        if (randomNum < accumulation)
+        if (randomGenNum < accumulation)
         {
             return 1;
         } else
         {
-            accumulation += TWO_BAR_CHANCE;
+            accumulation += twoBarChance;
         }
 
-        if (randomNum < accumulation)
+        if (randomGenNum < accumulation)
         {
             return 2;
         } else
         {
-            accumulation += ONE_BAR_CHANCE;
+            accumulation += oneBarChance;
         }
 
-        if (randomNum < accumulation)
+        if (randomGenNum < accumulation)
         {
             return 3;
         }
@@ -94,8 +100,8 @@ public class CellGenerator : MonoBehaviour
         TileType tileTypeTwo = GetRandomTileType();
         CellData cellData = new CellData();
 
-        int randomSide = random.Next(0, 2);
-        if (randomSide == 0)
+        int randomGenSide = randomGen.Next(0, 2);
+        if (randomGenSide == 0)
         {
             cellData[0, 0] = tileTypeOne;
             cellData[1, 0] = tileTypeOne;
@@ -117,12 +123,12 @@ public class CellGenerator : MonoBehaviour
     {
         CellData cellData = new CellData(GetRandomTileType(), GetRandomTileType(), GetRandomTileType(), GetRandomTileType());
 
-        int randomNum = random.Next(0, 4);
-        int x = randomNum / CellData.CELL_SIZE;
-        int y = randomNum % CellData.CELL_SIZE;
+        int randomGenNum = randomGen.Next(0, 4);
+        int x = randomGenNum / CellData.CELL_SIZE;
+        int y = randomGenNum % CellData.CELL_SIZE;
 
-        int randomSide = random.Next(0, 2);
-        if (randomSide == 0)
+        int randomGenSide = randomGen.Next(0, 2);
+        if (randomGenSide == 0)
         {
             cellData[x, y] = cellData[1 - x, y];
         } else
@@ -191,7 +197,7 @@ public class CellGenerator : MonoBehaviour
 
     private TileType GetRandomTileType()
     {
-        return (TileType)random.Next(
+        return (TileType)randomGen.Next(
             (int)TileType.RED,
             (int)TileType.PURPLE + 1
         );

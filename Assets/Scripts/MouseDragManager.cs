@@ -53,7 +53,7 @@ public class MouseDragManager : MonoBehaviour
 
             holdingCell.transform.position = new Vector3(
                 worldPosition.x,
-                holdingCellStartPosition.y + 1f,
+                holdingCellStartPosition.y + 0.1f,
                 worldPosition.z
             );
         }
@@ -95,12 +95,13 @@ public class MouseDragManager : MonoBehaviour
             currentHoveringCell.DropCellSuccess();
             currentHoveringCell.Setup(holdingCellOrigin.CellData);
             holdingCellOrigin.DropSuccess();
-            AudioManager.Instance.PlaySoundFX(dropSFX, transform, 1.0f);
             Destroy(holdingCell);
         } else
         {
             holdingCell.transform.position = holdingCellOrigin.transform.position;
         }
+
+        AudioManager.Instance.PlaySoundFX(dropSFX, transform, 1.0f);
 
         //Debug.Log("No cell to drop");
         holdingCellOrigin = null;

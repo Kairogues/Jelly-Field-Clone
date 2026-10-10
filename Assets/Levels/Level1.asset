@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e15a1f842bcb40b4db3d6dcb63810c70, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: Assembly-CSharp::Level
-  levelText: 1
+  level: 1
+  cellSpawnerCount: 3
   goals:
   - key: 2
     value: 2

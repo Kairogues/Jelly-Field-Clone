@@ -18,7 +18,6 @@ public class Game : MonoBehaviour
 
     public void StartNewGame()
     {
-        idleDuration = 2f;
         gameLogic.SetupNewGame();
 
         Grid2D<CellData> cellDataGridPrototype = gameLogic.CellDataGrid.cellDataGrid;
@@ -36,6 +35,22 @@ public class Game : MonoBehaviour
             }
         }
     }
+
+
+    public void ResetLevel()
+    {
+        for (int x = 0; x < cellGrid.SizeX; x++)
+        {
+            for (int y = 0; y < cellGrid.SizeY; y++)
+            {
+                cellGrid[x][y].DroppedCell -= AddCell;
+                Destroy(cellGrid[x][y]);
+            }
+        }
+
+        StartNewGame();
+    }
+
 
     public void Process()
     {
@@ -109,7 +124,8 @@ public class Game : MonoBehaviour
         GameObject cellInstance = Instantiate(
                 cellPrefab.gameObject,
                 new Vector3(x + cellOffset.x, 0, y + cellOffset.y),
-                Quaternion.identity
+                Quaternion.identity,
+                transform
             );
 
         if (cellInstance.TryGetComponent(out Cell cell))

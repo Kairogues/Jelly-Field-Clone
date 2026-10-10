@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BigA
   m_EditorClassIdentifier: Assembly-CSharp::CellDataGrid
   width: 5
-  height: 8
+  height: 7
   cellDataGrid:
     grid:
     - column:
@@ -45,48 +45,7 @@ MonoBehaviour:
           grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
     - column:
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
-    - column:
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
       - innerTile:
           grid:
           - column: 0000000000000000i
@@ -144,15 +103,36 @@ MonoBehaviour:
           grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
-      - innerTile:
-          grid:
-          - column: 0000000000000000i
-          - column: 0000000000000000i
     - column:
       - innerTile:
           grid:
           - column: 0000000000000000i
           - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+      - innerTile:
+          grid:
+          - column: 0000000000000000i
+          - column: 0000000000000000i
+    - column:
       - innerTile:
           grid:
           - column: 0000000000000000i
