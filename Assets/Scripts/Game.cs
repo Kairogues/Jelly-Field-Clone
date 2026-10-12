@@ -14,6 +14,12 @@ public class Game : MonoBehaviour
     private bool acceptInputCell = true;
     private float idleDuration = 0f;
 
+    public bool AcceptInputCell
+    {
+        get => acceptInputCell;
+        set => acceptInputCell = value;
+    }
+
 
 
     public void StartNewGame()
@@ -135,6 +141,12 @@ public class Game : MonoBehaviour
         }
 
         return cell;
+    }
+
+
+    public void PauseGameProcessingForSeconds(float second)
+    {
+        idleDuration = Mathf.Max(second, idleDuration);
     }
 
 

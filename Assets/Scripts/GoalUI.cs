@@ -23,20 +23,20 @@ public class GoalUI : MonoBehaviour
     }
 
 
-    private void OnTaskProgressed(TileType type, int newAmount)
+    public void OnTaskProgressed(TileType type, int newAmount)
     {
         taskElementUIDictionary[type].UpdateAmountText(newAmount);
     }
 
 
-    private void OnTaskCompleted(TileType type)
+    public void OnTaskCompleted(TileType type)
     {
         taskElementUIDictionary[type].CompleteTask();
         AudioManager.Instance.PlaySoundFX(taskCompletion, transform, 1.0f);
     }
 
 
-    private void OnGoalCompleted()
+    public void OnGoalCompleted()
     {
         AudioManager.Instance.PlaySoundFX(goalReach, transform, 1.0f);
     }

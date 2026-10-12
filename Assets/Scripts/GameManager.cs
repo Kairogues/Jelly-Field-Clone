@@ -53,11 +53,15 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private void GoNextLevel()
+    public void GoNextLevel()
     {
         if ((currentLevelNum + 1) != levels.Count)
         {
             currentLevelNum++;
         }
+
+        Debug.Log("Hey");
+
+        ResetLevel();
     }
 }

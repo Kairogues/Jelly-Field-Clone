@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    public event Action<int> LostGame;
-    public event Action<int> WonGame;
+    public event Action LostGame;
+    public event Action WonGame;
     public event Action Reset;
 
     [SerializeField] private Game game;
@@ -83,19 +83,19 @@ public class Level : MonoBehaviour
 
     private void PrintCurrentTask(TileType type, int num)
     {
-        Debug.Log(type + " progress: " + num);
+        //Debug.Log(type + " progress: " + num);
     }
 
 
     private void PrintCompletedTask(TileType type)
     {
-        Debug.Log(type + " task completed!");
+        //Debug.Log(type + " task completed!");
     }
 
 
     private void PrintCompletedGoal()
     {
-        Debug.Log("Goal Completed");
-        WonGame?.Invoke(currentLevel);
+        //Debug.Log("Goal Completed");
+        WonGame?.Invoke();
     }
 }
