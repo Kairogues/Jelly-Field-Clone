@@ -851,7 +851,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3565626110344670311}
         m_TargetAssemblyTypeName: Level, Assembly-CSharp
-        m_MethodName: ResetLevel
+        m_MethodName: OnResetButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

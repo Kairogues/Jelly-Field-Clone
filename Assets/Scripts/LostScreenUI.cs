@@ -34,7 +34,6 @@ public class LostScreenUI : MonoBehaviour
 
     public void OnResetLevelClicked()
     {
-        // Fade
-        GameManager.Instance.ResetLevel();
+        currentLevel.OnResetButtonClicked();
     }
 }

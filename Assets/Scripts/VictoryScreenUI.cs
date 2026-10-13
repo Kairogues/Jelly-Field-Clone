@@ -34,7 +34,6 @@ public class VictoryScreenUI : MonoBehaviour
 
     public void OnNextLevelClicked()
     {
-        // Fade
-        GameManager.Instance.GoNextLevel();
+        currentLevel.OnNextLevelButtonClicked();
     }
 }

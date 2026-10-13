@@ -20,6 +20,12 @@ public class Game : MonoBehaviour
         set => acceptInputCell = value;
     }
 
+    public float IdleDuration
+    {
+        get => idleDuration;
+        set => idleDuration = value;
+    }
+
 
 
     public void StartNewGame()

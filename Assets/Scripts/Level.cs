@@ -5,7 +5,8 @@ public class Level : MonoBehaviour
 {
     public event Action LostGame;
     public event Action WonGame;
-    public event Action Reset;
+    public event Action ClickedRetryButton;
+    public event Action ClickedNextLevelButton;
 
     [SerializeField] private Game game;
     [SerializeField] private GameLogic gameLogic;
@@ -65,9 +66,7 @@ public class Level : MonoBehaviour
         }
 
         gameLogic.PoppedTile += goalTracker.Contribute;
-        goalTracker.ProgressedTask += PrintCurrentTask;
-        goalTracker.CompletedTask += PrintCompletedTask;
-        goalTracker.CompletedGoal += PrintCompletedGoal;
+        goalTracker.CompletedGoal += OnGameWon;
 
         game.StartNewGame();
 
@@ -75,27 +74,20 @@ public class Level : MonoBehaviour
     }
 
 
-    public void ResetLevel()
+    public void OnResetButtonClicked()
     {
-        Reset?.Invoke();
+        ClickedRetryButton?.Invoke();
     }
 
 
-    private void PrintCurrentTask(TileType type, int num)
+    public void OnNextLevelButtonClicked()
     {
-        //Debug.Log(type + " progress: " + num);
+        ClickedNextLevelButton?.Invoke();
     }
 
 
-    private void PrintCompletedTask(TileType type)
+    private void OnGameWon()
     {
-        //Debug.Log(type + " task completed!");
-    }
-
-
-    private void PrintCompletedGoal()
-    {
-        //Debug.Log("Goal Completed");
         WonGame?.Invoke();
     }
 }
